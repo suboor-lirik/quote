@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - Quote Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #50c9c3;
+            --accent: #ff7f50;
+            --bg-light: #f0f4f8;
+            --bg-dark: #1a1a2e;
+            --text-dark: #333;
+            --text-light: #fff;
+            --message-user-bg: var(--primary);
+            --message-bot-bg: var(--secondary);
+            --bg-main: var(--bg-light);
+            --text-main: var(--text-dark);
+        }
+
+        [data-theme="dark"] {
+            --bg-main: var(--bg-dark);
+            --text-main: var(--text-light);
+            --bg-light: #121212;
+            --message-user-bg: #3a7cc7;
+            --message-bot-bg: #3ea8a2;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-main), #d9e2ec);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(74, 144, 226, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .nav-links a:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .hero-section {
+            height: 40vh;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            margin-top: 60px; /* Offset for fixed navbar */
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 15px;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            animation: glow 1.5s ease-in-out infinite alternate;
+            transform: perspective(500px) translateZ(0);
+            transition: transform 0.3s ease;
+            text-shadow: 0 0 10px var(--accent), 0 0 15px var(--secondary);
+        }
+
+        .hero-content h1:hover {
+            transform: perspective(500px) translateZ(20px);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: var(--text-light);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .chat-main-section {
+            padding: 40px 15px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-container:hover {
+            transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transition: all 0.4s ease;
+        }
+
+        .chat-container:hover::before {
+            top: -100%;
+            left: -100%;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        .bot-avatar {
+            font-size: 2rem;
+            margin-right: 10px;
+            color: var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .quick-reply-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-reply-btn:hover {
+            background: var(--primary);
+            color: var(--text-light);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .quick-reply-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .quick-reply-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) transparent;
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .chat-message {
+            display: flex;
+            align-items: flex-start;
+            max-width: 80%;
+            animation: slide-in 0.4s ease-out;
+            position: relative;
+        }
+
+        .chat-message .avatar {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .chat-message.user .avatar {
+            margin-left: 10px;
+            margin-right: 0;
+            order: 2;
+        }
+
+        .chat-message .content {
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 1rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .chat-message.user .content {
+            background: var(--message-user-bg);
+            color: var(--text-light);
+            border-bottom-right-radius: 4px;
+            text-align: right;
+        }
+
+        .chat-message.bot {
+            align-self: flex-start;
+        }
+
+        .chat-message.bot .content {
+            background: var(--message-bot-bg);
+            color: var(--text-light);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message .feedback {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+            justify-content: flex-end;
+        }
+
+        .chat-message.bot .feedback {
+            justify-content: flex-start;
+        }
+
+        .feedback-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .feedback-btn:hover {
+            color: var(--accent);
+        }
+
+        .chat-message code {
+            background: rgba(0,0,0,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .chat-message strong {
+            font-weight: 600;
+        }
+
+        .chat-message em {
+            font-style: italic;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .attach-btn, .emoji-btn, .voice-btn {
+            padding: 15px;
+            background: var(--secondary);
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .attach-btn:hover, .emoji-btn:hover, .voice-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            background: var(--bg-light);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 20;
+        }
+
+        .emoji-picker button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 127, 80, 0.3);
+        }
+
+        .chat-send-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-send-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .chat-send-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .chat-send-btn:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background: var(--message-bot-bg);
+            color: var(--text-light);
+            border-radius: 18px;
+            max-width: 80%;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: var(--text-light);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        footer {
+            padding: 30px 15px;
+            background: var(--bg-dark);
+            text-align: center;
+            color: var(--text-light);
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent); }
+            to { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary); }
+        }
+
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section { height: 30vh; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-content p { font-size: 1.1rem; }
+            .chat-container { padding: 15px; height: 60vh; }
+            .chat-header { font-size: 1.6rem; }
+            .quick-replies { flex-direction: column; align-items: center; }
+            .chat-input-container { flex-wrap: wrap; justify-content: center; }
+            .chat-send-btn { width: auto; }
+            .nav-links { gap: 10px; }
+            .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#">AI Assistant</a>
+            <a href="dashboard.html">Dashboard</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+    </nav>
+
+    <section class="hero-section">
+        <div id="particles-js"></div>
+        <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
+            <h1>Chat with Quote AI Assistant</h1>
+            <p>Your intelligent companion for instant quote generation, max discount calculations, and personalized business insights!</p>
+        </div>
+    </section>
+
+    <section class="chat-main-section" id="chat-section" data-aos="fade-up" data-aos-delay="400">
+        <div class="chat-container">
+            <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Master AI</h2>
+            <div class="quick-replies" id="quickReplies">
+                <button class="quick-reply-btn" onclick="quickReply('Generate a quote for a premium account with 10 units of Product A')">Generate Quote Example</button>
+                <button class="quick-reply-btn" onclick="quickReply('What is the maximum discount for a gold customer on Product B?')">Max Discount Query</button>
+                <button class="quick-reply-btn" onclick="quickReply('Explain how discounts are calculated')">Explain Discounts</button>
+                <button class="quick-reply-btn" onclick="quickReply('Compare quotes for different quantities')">Compare Quotes</button>
+                <button class="quick-reply-btn" onclick="quickReply('Help me optimize my quote for better savings')">Optimize Savings</button>
+            </div>
+            <div class="chat-box" id="chatBox"></div>
+            <div class="chat-input-container">
+                <button class="attach-btn" title="Attach File"><i class="fas fa-paperclip"></i></button>
+                <button class="emoji-btn" id="emojiBtn" title="Add Emoji"><i class="fas fa-smile"></i></button>
+                <div class="emoji-picker" id="emojiPicker">
+                    <button onclick="insertEmoji('smile')">smile</button>
+                    <button onclick="insertEmoji('thumbs up')">thumbs up</button>
+                    <button onclick="insertEmoji('briefcase')">briefcase</button>
+                    <button onclick="insertEmoji('money bag')">money bag</button>
+                    <button onclick="insertEmoji('chart increasing')">chart increasing</button>
+                </div>
+                <button class="voice-btn" id="voiceBtn" title="Voice Input"><i class="fas fa-microphone"></i></button>
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask about quotes, discounts, or business tips..." autocomplete="off">
+                <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Quote Generator. All rights reserved. Powered by Advanced AI for Business Excellence.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Particles.js
+        if (document.getElementById('particles-js')) {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 100, density: { enable: true, value_area: 800 } },
+                    color: { value: '#ffffff' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.6, random: true },
+                    size: { value: 4, random: true },
+                    line_linked: { enable: true, distance: 120, color: '#ffffff', opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 8, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                    modes: { repulse: { distance: 120, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+        }
+
+        // Initialize AOS
+        AOS.init({ duration: 1200, once: true, easing: 'ease-in-out-sine' });
+
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
+
+        let conversationId = null;
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const quickReplies = document.getElementById('quickReplies');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
+        const attachBtn = document.querySelector('.attach-btn');
+
+        // Simulate attachment
+        attachBtn.addEventListener('click', () => {
+            alert('Attachment feature: Upload files for quote analysis (Simulated)');
+        });
+
+        // Emoji picker toggle
+        emojiBtn.addEventListener('click', () => {
+            emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
+        });
+
+        function insertEmoji(emoji) {
+            chatInput.value += emoji;
+            chatInput.focus();
+            emojiPicker.style.display = 'none';
+        }
+
+        // Simulate speech recognition
+        let isRecording = false;
+        voiceBtn.addEventListener('click', () => {
+            isRecording = !isRecording;
+            voiceBtn.style.background = isRecording ? 'var(--accent)' : 'var(--secondary)';
+            alert(isRecording ? 'Voice recording started! (Simulated)' : 'Voice recording stopped! (Simulated)');
+            // In real: use Web Speech API
+        });
+
+        // Simulate chat initialization (fallback to local messages since no backend)
+        function initializeChat() {
+            conversationId = 'simulated-convo-123'; // Simulated ID
+            addBotMessage("Welcome to Quote Master AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! smile briefcase chart increasing");
+            showQuickReplies(true);
+        }
+
+        function addUserMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'chat-message user';
+            msg.innerHTML = `
+                <i class="fas fa-user avatar"></i>
+                <div class="content">${text}</div>
+                <div class="feedback"></div>
+            `;
+            chatBox.appendChild(msg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addBotMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'chat-message bot';
+            msg.innerHTML = `
+                <i class="fas fa-robot avatar"></i>
+                <div class="content">${formatMessage(text)}</div>
+                <div class="feedback">
+                    <button class="feedback-btn" onclick="sendFeedback('up')" title="Good Response"><i class="fas fa-thumbs-up"></i></button>
+                    <button class="feedback-btn" onclick="sendFeedback('down')" title="Bad Response"><i class="fas fa-thumbs-down"></i></button>
+                </div>
+            `;
+            chatBox.appendChild(msg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            showQuickReplies(false);
+        }
+
+        function sendFeedback(type) {
+            alert(`Feedback sent: ${type === 'up' ? 'Thumbs Up!' : 'Thumbs Down!'}`);
+            // In real: send to server
+        }
+
+        function showTyping() {
+            const typing = document.createElement('div');
+            typing.className = 'typing-indicator';
+            typing.id = 'typing';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            chatBox.appendChild(typing);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
+        }
+
+        function formatMessage(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                       .replace(/`(.*?)`/g, '<code>$1</code>')
+                       .replace(/\n/g, '<br>');
+        }
+
+        function showQuickReplies(show) {
+            quickReplies.style.display = show ? 'flex' : 'none';
+        }
+
+        function quickReply(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message || !conversationId) return;
+
+            addUserMessage(message);
+            chatInput.value = '';
+            sendBtn.disabled = true;
+            showTyping();
+
+            // Simulate API response (since no backend)
+            setTimeout(() => {
+                hideTyping();
+                let response = "Simulated AI Response: Based on your query '" + message + "', here's a sample quote calculation. Regular Total: $1000, Max Discount: 20%, Discounted Total: $800. Let me know more details for precise calculation! money bag chart increasing";
+                if (message.toLowerCase().includes('discount')) {
+                    response = "Maximum discount for gold customers is typically 25% on bulk orders. Example: For Product B (unit price $50), quantity 10: Discounted Total $375 after 25% off.";
+                } else if (message.toLowerCase().includes('generate quote')) {
+                    response = "Generated Quote: Account: Premium, Product: A, Qty: 10, Unit: $100, Discount: 15%, Total: $850. Download PDF ready!";
+                }
+                addBotMessage(response);
+                sendBtn.disabled = false;
+                chatInput.focus();
+            }, 1500); // Simulate delay
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeChat();
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Quote Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #50c9c3;
+            --accent: #ff7f50;
+            --bg-light: #f0f4f8;
+            --bg-dark: #1a1a2e;
+            --text-dark: #333;
+            --text-light: #fff;
+            --message-user-bg: var(--primary);
+            --message-bot-bg: var(--secondary);
+            --bg-main: var(--bg-light);
+            --text-main: var(--text-dark);
+        }
+
+        [data-theme="dark"] {
+            --bg-main: var(--bg-dark);
+            --text-main: var(--text-light);
+            --bg-light: #121212;
+            --message-user-bg: #3a7cc7;
+            --message-bot-bg: #3ea8a2;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-main), #d9e2ec);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(74, 144, 226, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .nav-links a:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .hero-section {
+            height: 40vh;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            margin-top: 60px; /* Offset for fixed navbar */
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 15px;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            animation: glow 1.5s ease-in-out infinite alternate;
+            transform: perspective(500px) translateZ(0);
+            transition: transform 0.3s ease;
+            text-shadow: 0 0 10px var(--accent), 0 0 15px var(--secondary);
+        }
+
+        .hero-content h1:hover {
+            transform: perspective(500px) translateZ(20px);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: var(--text-light);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .visualization-section {
+            padding: 60px 15px;
+            background: linear-gradient(135deg, var(--bg-light), #d9e2ec);
+        }
+
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .visualization-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .visualization-container:hover {
+            transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .visualization-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transition: all 0.4s ease;
+        }
+
+        .visualization-container:hover::before {
+            top: -100%;
+            left: -100%;
+        }
+
+        .visualization-container h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        .quote-chart {
+            height: 350px;
+            transform: perspective(800px) translateZ(0);
+            transition: transform 0.3s ease;
+        }
+
+        .quote-chart:hover {
+            transform: perspective(800px) translateZ(20px);
+        }
+
+        .recent-activity ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .recent-activity li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            animation: slide-in 0.4s ease-out;
+            font-size: 0.9rem;
+        }
+
+        .recent-activity li:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(10px);
+        }
+
+        .recent-activity .value {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .view-all-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-all-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .view-all-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .view-all-btn:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .quotes-table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.3);
+            border-radius: 15px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .quotes-table-container:hover {
+            transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .quotes-table-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transition: all 0.4s ease;
+        }
+
+        .quotes-table-container:hover::before {
+            top: -100%;
+            left: -100%;
+        }
+
+        .quotes-table-container h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        .quotes-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .quotes-table th,
+        .quotes-table td {
+            padding: 15px;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .quotes-table th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .quotes-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        .quotes-table tr:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .quotes-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .quotes-table .download-btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: var(--text-light);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        .quotes-table .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .quotes-table .download-btn:hover::before {
+            width: 150px;
+            height: 150px;
+        }
+
+        .quotes-table .download-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        footer {
+            padding: 30px 15px;
+            background: var(--bg-dark);
+            text-align: center;
+            color: var(--text-light);
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent); }
+            to { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary); }
+        }
+
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section { height: 30vh; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-content p { font-size: 1.1rem; }
+            .visualization-grid { grid-template-columns: 1fr; }
+            .visualization-container { padding: 15px; }
+            .visualization-container h2 { font-size: 1.6rem; }
+            .quote-chart { height: 300px; }
+            .recent-activity li { font-size: 0.9rem; }
+            .quotes-table th, .quotes-table td { font-size: 0.9rem; padding: 10px; }
+            .quotes-table .download-btn { font-size: 0.9rem; }
+            .nav-links { gap: 10px; }
+            .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="assistant.html">AI Assistant</a>
+            <a href="#">Dashboard</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+    </nav>
+
+    <section class="hero-section">
+        <div id="particles-js"></div>
+        <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
+            <h1>Quote Dashboard</h1>
+            <p>Unlock insights: Track trends, monitor activity, and manage your generated quotes with stunning visualizations and interactive tools!</p>
+        </div>
+    </section>
+
+    <section class="visualization-section" id="visualization-section" data-aos="fade-up" data-aos-delay="100">
+        <div class="visualization-grid">
+            <div class="visualization-container quote-chart" data-aos="fade-up" data-aos-delay="100">
+                <h2>Quote Trends</h2>
+                <canvas id="quoteChart"></canvas>
+            </div>
+            <div class="visualization-container recent-activity" data-aos="fade-up" data-aos-delay="200">
+                <h2>Recent Activity</h2>
+                <ul id="recentActivity"></ul>
+                <button class="view-all-btn" onclick="alert('Viewing all quotes (simulated)')">View All Quotes</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="visualization-section" id="quotes-table-container" data-aos="fade-up" data-aos-delay="300">
+        <div class="quotes-table-container">
+            <h2>Generated Quotes</h2>
+            <table class="quotes-table">
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Discounted Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="quotesTableBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Quote Generator. All rights reserved. Powered by Advanced AI for Business Excellence.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Particles.js
+        if (document.getElementById('particles-js')) {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 100, density: { enable: true, value_area: 800 } },
+                    color: { value: '#ffffff' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.6, random: true },
+                    size: { value: 4, random: true },
+                    line_linked: { enable: true, distance: 120, color: '#ffffff', opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 8, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                    modes: { repulse: { distance: 120, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+        }
+
+        // Initialize AOS
+        AOS.init({ duration: 1200, once: true, easing: 'ease-in-out-sine' });
+
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
+
+        // Simulated data (since no backend)
+        let quotes = [
+            { account_name: 'Premium Account', product_name: 'Product A', quantity: 10, discounted_total: 850, regular_total: 1000, unit_price: 100, partner_discount: 15, customer_type: 'Gold', pricebook: 'Standard', created_at: new Date().toISOString(), account_id: 'ACC001' },
+            { account_name: 'Standard Account', product_name: 'Product B', quantity: 5, discounted_total: 375, regular_total: 500, unit_price: 100, partner_discount: 25, customer_type: 'Silver', pricebook: 'Bulk', created_at: new Date(Date.now() - 86400000).toISOString(), account_id: 'ACC002' },
+            { account_name: 'Enterprise Account', product_name: 'Product C', quantity: 20, discounted_total: 1600, regular_total: 2000, unit_price: 100, partner_discount: 20, customer_type: 'Platinum', pricebook: 'Enterprise', created_at: new Date(Date.now() - 172800000).toISOString(), account_id: 'ACC003' },
+            { account_name: 'Basic Account', product_name: 'Product D', quantity: 3, discounted_total: 270, regular_total: 300, unit_price: 100, partner_discount: 10, customer_type: 'Bronze', pricebook: 'Basic', created_at: new Date(Date.now() - 259200000).toISOString(), account_id: 'ACC004' },
+            { account_name: 'VIP Account', product_name: 'Product E', quantity: 15, discounted_total: 1275, regular_total: 1500, unit_price: 100, partner_discount: 15, customer_type: 'VIP', pricebook: 'VIP', created_at: new Date(Date.now() - 345600000).toISOString(), account_id: 'ACC005' }
+        ];
+
+        let chartInstance = null;
+
+        function updateChart() {
+            const ctx = document.getElementById('quoteChart').getContext('2d');
+            const dates = quotes.map(q => new Date(q.created_at).toLocaleDateString());
+            const totals = quotes.map(q => q.discounted_total);
+
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates.reverse(),
+                    datasets: [{
+                        label: 'Discounted Totals',
+                        data: totals.reverse(),
+                        borderColor: 'rgba(74, 144, 226, 1)',
+                        backgroundColor: 'rgba(74, 144, 226, 0.3)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ff7f50',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ff7f50',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Amount ($)', color: '#333', font: { size: 14 } }, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { title: { display: true, text: 'Date', color: '#333', font: { size: 14 } }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top', labels: { color: '#333', font: { size: 14 } } },
+                        tooltip: { backgroundColor: 'rgba(26, 26, 46, 0.9)', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 10 }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
+        function updateRecentActivity() {
+            const recentActivity = document.getElementById('recentActivity');
+            recentActivity.innerHTML = '';
+            quotes.slice(0, 5).forEach(quote => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${quote.product_name}</span> <span class="value">$${quote.discounted_total.toFixed(2)}</span>`;
+                recentActivity.appendChild(li);
+            });
+        }
+
+        function updateQuotesTable() {
+            const quotesTableBody = document.getElementById('quotesTableBody');
+            quotesTableBody.innerHTML = '';
+            quotes.forEach(quote => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${quote.account_name}</td>
+                    <td>${quote.product_name}</td>
+                    <td>${quote.quantity}</td>
+                    <td>$${quote.discounted_total.toFixed(2)}</td>
+                    <td><button class="download-btn" onclick="downloadQuotePDF(${JSON.stringify(quote).replace(/"/g, '&quot;')})">Download PDF</button></td>
+                `;
+                quotesTableBody.appendChild(tr);
+            });
+        }
+
+        function downloadQuotePDF(quote) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(24);
+            doc.setTextColor(74, 144, 226);
+            doc.text('Quote Generator', 20, 20);
+            doc.setFontSize(16);
+            doc.setTextColor(255, 127, 80);
+            doc.text('Official Quote Bill', 20, 30);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(51, 51, 51);
+            doc.text('Quote Generator Inc.', 20, 45);
+            doc.text('123 AI Avenue, Tech City', 20, 50);
+            doc.text('Email: contact@quotegenerator.com', 20, 55);
+            doc.text('Phone: +1-800-QUOTE-AI', 20, 60);
+
+            doc.setDrawColor(74, 144, 226);
+            doc.setLineWidth(0.4);
+            doc.line(20, 65, 190, 65);
+
+            doc.setFontSize(14);
+            doc.setTextColor(255, 127, 80);
+            doc.text('Bill Details', 20, 75);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(51, 51, 51);
+            const details = [
+                `Account ID: ${quote.account_id}`,
+                `Account Name: ${quote.account_name}`,
+                `Customer Type: ${quote.customer_type}`,
+                `Pricebook: ${quote.pricebook}`,
+                `Date: ${new Date(quote.created_at).toLocaleString()}`
+            ];
+            details.forEach((line, i) => doc.text(line, 20, 85 + i * 8));
+
+            doc.setFillColor(74, 144, 226);
+            doc.rect(20, 120, 170, 12, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(12);
+            doc.text(['Product', 'Qty', 'Unit Price', 'Discount', 'Total'], [22, 70, 100, 140, 170], 128);
+
+            doc.setTextColor(51, 51, 51);
+            doc.text([
+                quote.product_name.length > 20 ? quote.product_name.substring(0, 17) + '...' : quote.product_name,
+                quote.quantity.toString(),
+                `$${quote.unit_price.toFixed(2)}`,
+                `${quote.partner_discount}%`,
+                `$${quote.discounted_total.toFixed(2)}`
+            ], [22, 70, 100, 140, 170], 140);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(51, 51, 51);
+            doc.text(`Regular Total: $${quote.regular_total.toFixed(2)}`, 150, 155);
+            doc.setTextColor(255, 127, 80);
+            doc.text(`Discounted Total: $${quote.discounted_total.toFixed(2)}`, 150, 165);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated by Quote Generator © 2025 | All rights reserved', 20, 280);
+            doc.setDrawColor(74, 144, 226);
+            doc.setLineWidth(0.2);
+            doc.line(20, 275, 190, 275);
+
+            doc.save(`Quote_${quote.account_id}.pdf`);
+        }
+
+        // Refresh visualizations on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateChart();
+            updateRecentActivity();
+            updateQuotesTable();
+        });
+    </script>
+</body>
+</html>
