@@ -43,6 +43,7 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
+        /* Rest of your CSS remains unchanged */
         .navbar {
             position: fixed;
             top: 0;
@@ -579,9 +580,9 @@
 <body data-theme="light">
     <nav class="navbar">
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="#">AI Assistant</a>
-            <a href="dashboard.html">Dashboard</a>
+            <a href="/">Home</a>
+            <a href="/assistant">AI Assistant</a>
+            <a href="/dashboard">Dashboard</a>
         </div>
         <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
     </nav>
@@ -609,11 +610,11 @@
                 <button class="attach-btn" title="Attach File"><i class="fas fa-paperclip"></i></button>
                 <button class="emoji-btn" id="emojiBtn" title="Add Emoji"><i class="fas fa-smile"></i></button>
                 <div class="emoji-picker" id="emojiPicker">
-                    <button onclick="insertEmoji('smile')">smile</button>
-                    <button onclick="insertEmoji('thumbs up')">thumbs up</button>
-                    <button onclick="insertEmoji('briefcase')">briefcase</button>
-                    <button onclick="insertEmoji('money bag')">money bag</button>
-                    <button onclick="insertEmoji('chart increasing')">chart increasing</button>
+                    <button onclick="insertEmoji('😊')">😊</button>
+                    <button onclick="insertEmoji('👍')">👍</button>
+                    <button onclick="insertEmoji('💼')">💼</button>
+                    <button onclick="insertEmoji('💰')">💰</button>
+                    <button onclick="insertEmoji('📈')">📈</button>
                 </div>
                 <button class="voice-btn" id="voiceBtn" title="Voice Input"><i class="fas fa-microphone"></i></button>
                 <input type="text" class="chat-input" id="chatInput" placeholder="Ask about quotes, discounts, or business tips..." autocomplete="off">
@@ -661,6 +662,7 @@
         });
 
         let conversationId = null;
+        let history = [];
         const chatBox = document.getElementById('chatBox');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -692,15 +694,7 @@
             isRecording = !isRecording;
             voiceBtn.style.background = isRecording ? 'var(--accent)' : 'var(--secondary)';
             alert(isRecording ? 'Voice recording started! (Simulated)' : 'Voice recording stopped! (Simulated)');
-            // In real: use Web Speech API
         });
-
-        // Simulate chat initialization (fallback to local messages since no backend)
-        function initializeChat() {
-            conversationId = 'simulated-convo-123'; // Simulated ID
-            addBotMessage("Welcome to Quote Master AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! smile briefcase chart increasing");
-            showQuickReplies(true);
-        }
 
         function addUserMessage(text) {
             const msg = document.createElement('div');
@@ -714,25 +708,20 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function addBotMessage(text) {
+        function addBotMessage(text, requestId) {
             const msg = document.createElement('div');
             msg.className = 'chat-message bot';
             msg.innerHTML = `
                 <i class="fas fa-robot avatar"></i>
                 <div class="content">${formatMessage(text)}</div>
                 <div class="feedback">
-                    <button class="feedback-btn" onclick="sendFeedback('up')" title="Good Response"><i class="fas fa-thumbs-up"></i></button>
-                    <button class="feedback-btn" onclick="sendFeedback('down')" title="Bad Response"><i class="fas fa-thumbs-down"></i></button>
+                    <button class="feedback-btn" onclick="sendFeedback('${requestId}', 1)" title="Good Response"><i class="fas fa-thumbs-up"></i></button>
+                    <button class="feedback-btn" onclick="sendFeedback('${requestId}', 0)" title="Bad Response"><i class="fas fa-thumbs-down"></i></button>
                 </div>
             `;
             chatBox.appendChild(msg);
             chatBox.scrollTop = chatBox.scrollHeight;
             showQuickReplies(false);
-        }
-
-        function sendFeedback(type) {
-            alert(`Feedback sent: ${type === 'up' ? 'Thumbs Up!' : 'Thumbs Down!'}`);
-            // In real: send to server
         }
 
         function showTyping() {
@@ -765,28 +754,69 @@
             sendMessage();
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const message = chatInput.value.trim();
-            if (!message || !conversationId) return;
+            if (!message) return;
 
             addUserMessage(message);
+            history.push({ role: 'user', content: message });
             chatInput.value = '';
             sendBtn.disabled = true;
             showTyping();
 
-            // Simulate API response (since no backend)
-            setTimeout(() => {
-                hideTyping();
-                let response = "Simulated AI Response: Based on your query '" + message + "', here's a sample quote calculation. Regular Total: $1000, Max Discount: 20%, Discounted Total: $800. Let me know more details for precise calculation! money bag chart increasing";
-                if (message.toLowerCase().includes('discount')) {
-                    response = "Maximum discount for gold customers is typically 25% on bulk orders. Example: For Product B (unit price $50), quantity 10: Discounted Total $375 after 25% off.";
-                } else if (message.toLowerCase().includes('generate quote')) {
-                    response = "Generated Quote: Account: Premium, Product: A, Qty: 10, Unit: $100, Discount: 15%, Total: $850. Download PDF ready!";
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: message,
+                        history: history,
+                        conversation_id: conversationId
+                    })
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(`Error: ${data.error}`);
+                    hideTyping();
+                    sendBtn.disabled = false;
+                    return;
                 }
-                addBotMessage(response);
+
+                conversationId = data.conversation_id;
+                addBotMessage(data.response, data.request_id);
+                history.push({ role: 'assistant', content: data.response });
+                hideTyping();
                 sendBtn.disabled = false;
                 chatInput.focus();
-            }, 1500); // Simulate delay
+            } catch (error) {
+                alert('Error: Failed to get response from server.');
+                console.error(error);
+                hideTyping();
+                sendBtn.disabled = false;
+            }
+        }
+
+        async function sendFeedback(requestId, rating) {
+            try {
+                const response = await fetch('/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ request_id: requestId, rating: rating })
+                });
+                const data = await response.json();
+                alert(data.message || `Feedback sent: ${rating === 1 ? 'Thumbs Up!' : 'Thumbs Down!'}`);
+            } catch (error) {
+                alert('Error: Failed to submit feedback.');
+                console.error(error);
+            }
+        }
+
+        // Initialize chat
+        function initializeChat() {
+            conversationId = 'convo-' + Date.now(); // Unique ID for session
+            addBotMessage("Welcome to Quote Master AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! 😊 💼 📈", null);
+            showQuickReplies(true);
         }
 
         // Initialize on load
