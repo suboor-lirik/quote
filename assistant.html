@@ -590,19 +590,17 @@
         <div id="particles-js"></div>
         <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
             <h1>Chat with Quote AI Assistant</h1>
-            <p>Your intelligent companion for instant quote generation, max discount calculations, and personalized business insights!</p>
+            <p>Your intelligent companion for instant quote generation & max discount calculations!</p>
         </div>
     </section>
 
     <section class="chat-main-section" id="chat-section" data-aos="fade-up" data-aos-delay="400">
         <div class="chat-container">
-            <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Master AI</h2>
+            <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Assistant AI</h2>
             <div class="quick-replies" id="quickReplies">
-                <button class="quick-reply-btn" onclick="quickReply('generate quote for Dickenson plc for quantity 5 for product ThunderBolt Server Rack')">Generate Quote for Dickenson</button>
-                <button class="quick-reply-btn" onclick="quickReply('What is the maximum discount for a gold customer on Product B?')">Max Discount Query</button>
-                <button class="quick-reply-btn" onclick="quickReply('Explain how discounts are calculated')">Explain Discounts</button>
-                <button class="quick-reply-btn" onclick="quickReply('Compare quotes for different quantities')">Compare Quotes</button>
-                <button class="quick-reply-btn" onclick="quickReply('Help me optimize my quote for better savings')">Optimize Savings</button>
+                <button class="quick-reply-btn" onclick="quickReply('generate quote for Dickenson plc for quantity 5 for product ThunderBolt Server Rack')">Generate Quote</button>
+                <button class="quick-reply-btn" onclick="quickReply('What is the maximum discount for Express Logistics and Transport for product ThunderBolt Server Rack for Quantity 12')">Max Discount</button>
+
             </div>
             <div class="chat-box" id="chatBox"></div>
             <div class="chat-input-container">
@@ -815,7 +813,7 @@
         // Initialize chat
         function initializeChat() {
             conversationId = 'convo-' + Date.now();
-            const welcomeMsg = "Welcome to Quote Master AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! 😊 💼 📈";
+            const welcomeMsg = "Welcome to Quote Assistant AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! 😊 💼 📈";
             addBotMessage(welcomeMsg, null);
             history.push({ role: 'assistant', content: welcomeMsg });
             showQuickReplies(true);
@@ -835,3 +833,4 @@
     </script>
 </body>
 </html>
+
