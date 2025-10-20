@@ -8,11 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #4a90e2;
             --secondary: #50c9c3;
             --accent: #ff7f50;
+            --success: #28a745;
             --bg-light: #f0f4f8;
             --bg-dark: #1a1a2e;
             --text-dark: #333;
@@ -21,6 +24,7 @@
             --message-bot-bg: var(--secondary);
             --bg-main: var(--bg-light);
             --text-main: var(--text-dark);
+            --border-color: #e0e6ed;
         }
 
         [data-theme="dark"] {
@@ -29,6 +33,7 @@
             --bg-light: #121212;
             --message-user-bg: #3a7cc7;
             --message-bot-bg: #3ea8a2;
+            --border-color: #333;
         }
 
         body {
@@ -266,24 +271,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .quick-reply-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.5s ease, height 0.5s ease;
-        }
-
-        .quick-reply-btn:hover::before {
-            width: 200px;
-            height: 200px;
-        }
-
         .chat-box {
             flex-grow: 1;
             background: rgba(255, 255, 255, 0.1);
@@ -312,10 +299,106 @@
             border-radius: 4px;
         }
 
+        /* NEW: Quote Table Styles */
+        .quote-container {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .quote-table-wrapper {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .quote-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--text-light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 600px;
+        }
+
+        .quote-table th,
+        .quote-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .quote-table th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .quote-table td {
+            font-size: 0.95rem;
+        }
+
+        .quote-table tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .quote-table .numeric {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .quote-table .currency {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .quote-table .discount {
+            color: var(--accent);
+        }
+
+        .quote-summary {
+            background: linear-gradient(135deg, var(--success), #20c997);
+            color: var(--text-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .pdf-download-btn {
+            background: linear-gradient(135deg, var(--accent), #ff6b35);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
+        }
+
+        .pdf-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 127, 80, 0.4);
+            background: linear-gradient(135deg, #ff6b35, var(--accent));
+        }
+
         .chat-message {
             display: flex;
             align-items: flex-start;
-            max-width: 80%;
+            max-width: 90%;
             animation: slide-in 0.4s ease-out;
             position: relative;
         }
@@ -388,21 +471,6 @@
             color: var(--accent);
         }
 
-        .chat-message code {
-            background: rgba(0,0,0,0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        .chat-message strong {
-            font-weight: 600;
-        }
-
-        .chat-message em {
-            font-style: italic;
-        }
-
         .chat-input-container {
             display: flex;
             gap: 10px;
@@ -434,6 +502,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: none;
             z-index: 20;
+            border: 1px solid var(--border-color);
         }
 
         .emoji-picker button {
@@ -441,6 +510,14 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .emoji-picker button:hover {
+            background: var(--primary);
+            color: var(--text-light);
         }
 
         .chat-input {
@@ -573,6 +650,8 @@
             .chat-send-btn { width: auto; }
             .nav-links { gap: 10px; }
             .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
+            .quote-table { font-size: 0.85rem; }
+            .quote-table th, .quote-table td { padding: 8px 10px; }
         }
     </style>
 </head>
@@ -598,9 +677,8 @@
         <div class="chat-container">
             <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Assistant AI</h2>
             <div class="quick-replies" id="quickReplies">
-                <button class="quick-reply-btn" onclick="quickReply('generate quote for Dickenson plc for quantity 5 for product ThunderBolt Server Rack')">Generate Quote</button>
+                <button class="quick-reply-btn" onclick="quickReply('generate quote for Dickenson plc with quantity 7 of ThunderBolt Server Rack')">Generate Quote</button>
                 <button class="quick-reply-btn" onclick="quickReply('What is the maximum discount for Express Logistics and Transport for product ThunderBolt Server Rack for Quantity 12')">Max Discount</button>
-
             </div>
             <div class="chat-box" id="chatBox"></div>
             <div class="chat-input-container">
@@ -693,6 +771,178 @@
             alert(isRecording ? 'Voice recording started! (Simulated)' : 'Voice recording stopped! (Simulated)');
         });
 
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        function createQuoteTable(quoteData) {
+            const tableHtml = `
+                <div class="quote-container">
+                    <h4 style="margin: 0 0 15px 0; color: var(--primary); font-size: 1.1rem;">
+                        <i class="fas fa-file-invoice-dollar"></i> Quote Details
+                    </h4>
+                    <div class="quote-table-wrapper">
+                        <table class="quote-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Account ID</strong></td>
+                                    <td>${quoteData.AccountId || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Account Name</strong></td>
+                                    <td><strong>${quoteData.AccountName || 'N/A'}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Customer Type</strong></td>
+                                    <td>${quoteData.customer_type || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pricebook</strong></td>
+                                    <td>${quoteData.selected_pricebook || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Product</strong></td>
+                                    <td><strong>${quoteData.ProductName || 'N/A'}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quantity</strong></td>
+                                    <td class="numeric">${quoteData.Quantity || 0}</td>
+                                </tr>
+                                <tr style="background: rgba(40, 167, 69, 0.1);">
+                                    <td><strong>Unit Price</strong></td>
+                                    <td class="numeric currency">${formatCurrency(quoteData.UnitPrice || 0)}</td>
+                                </tr>
+                                <tr style="background: rgba(255, 127, 80, 0.1);">
+                                    <td><strong>Discount</strong></td>
+                                    <td class="numeric discount">${(quoteData.PartnerDiscount || 0)}%</td>
+                                </tr>
+                                <tr style="background: rgba(40, 167, 69, 0.1);">
+                                    <td><strong>Regular Total</strong></td>
+                                    <td class="numeric currency">${formatCurrency(quoteData.RegularTotal || 0)}</td>
+                                </tr>
+                                <tr style="background: rgba(40, 167, 69, 0.2); border-bottom: none;">
+                                    <td><strong>Discounted Total</strong></td>
+                                    <td class="numeric currency" style="font-size: 1.1rem; color: var(--success); font-weight: bold;">
+                                        ${formatCurrency(quoteData.DiscountedTotal || 0)}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="quote-summary">
+                        <strong>📋 Summary:</strong> A quote has been generated for <strong>${quoteData.AccountName}</strong>, 
+                        an <strong>${quoteData.customer_type}</strong> using the <strong>${quoteData.selected_pricebook}</strong>. 
+                        The quote includes <strong>${quoteData.Quantity}</strong> units of the <strong>${quoteData.ProductName}</strong>, 
+                        each priced at <strong>${formatCurrency(quoteData.UnitPrice)}</strong>. 
+                        After applying a <strong>${quoteData.PartnerDiscount}% partner discount</strong>, 
+                        the total reduces from <strong>${formatCurrency(quoteData.RegularTotal)}</strong> 
+                        to <strong style="color: #fff; font-size: 1.1rem;">${formatCurrency(quoteData.DiscountedTotal)}</strong>.
+                    </div>
+                    
+                    <button class="pdf-download-btn" onclick="downloadQuotePDF(this, ${JSON.stringify(quoteData)})">
+                        <i class="fas fa-download"></i> Download Quote PDF
+                    </button>
+                </div>
+            `;
+            return tableHtml;
+        }
+
+        async function downloadQuotePDF(button, quoteData) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Company header
+                doc.setFontSize(20);
+                doc.setFont(undefined, 'bold');
+                doc.text('Quote Document', 20, 20);
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
+                doc.text(`Quote ID: Q${Date.now()}`, 20, 38);
+                
+                // Customer info
+                doc.setFont(undefined, 'bold');
+                doc.text('Customer Information', 20, 55);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Account: ${quoteData.AccountName}`, 20, 65);
+                doc.text(`Account ID: ${quoteData.AccountId}`, 20, 73);
+                doc.text(`Customer Type: ${quoteData.customer_type}`, 20, 81);
+                doc.text(`Pricebook: ${quoteData.selected_pricebook}`, 20, 89);
+                
+                // Product details
+                doc.setFont(undefined, 'bold');
+                doc.text('Product Details', 20, 105);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Product: ${quoteData.ProductName}`, 20, 115);
+                doc.text(`Quantity: ${quoteData.Quantity}`, 20, 123);
+                doc.text(`Unit Price: ${formatCurrency(quoteData.UnitPrice)}`, 20, 131);
+                
+                // Pricing table
+                doc.setFont(undefined, 'bold');
+                doc.text('Pricing Summary', 20, 145);
+                
+                let yPos = 155;
+                doc.setFont(undefined, 'normal');
+                doc.text(`Regular Total: ${formatCurrency(quoteData.RegularTotal)}`, 30, yPos);
+                yPos += 8;
+                doc.text(`Discount (${quoteData.PartnerDiscount}%): -${formatCurrency(quoteData.RegularTotal * (quoteData.PartnerDiscount / 100))}`, 30, yPos);
+                yPos += 10;
+                doc.setFont(undefined, 'bold');
+                doc.setFontSize(14);
+                doc.text(`Final Total: ${formatCurrency(quoteData.DiscountedTotal)}`, 30, yPos);
+                
+                // Terms
+                yPos += 25;
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text('Terms & Conditions', 20, yPos);
+                yPos += 8;
+                doc.setFont(undefined, 'normal');
+                doc.text('• Payment Terms: Net 30 days', 20, yPos);
+                yPos += 6;
+                doc.text('• Valid until: 30 days from generation date', 20, yPos);
+                yPos += 6;
+                doc.text('• Prices subject to change without notice', 20, yPos);
+                
+                // Footer
+                doc.setFontSize(10);
+                doc.text('Thank you for your business!', 20, 280);
+                doc.text('Generated by Quote AI Assistant', 20, 285);
+                
+                // Save PDF
+                doc.save(`Quote_${quoteData.AccountId}_${Date.now()}.pdf`);
+                
+                button.innerHTML = '<i class="fas fa-check"></i> PDF Downloaded!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-download"></i> Download Quote PDF';
+                    button.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('Error generating PDF. Please try again.');
+                button.innerHTML = '<i class="fas fa-download"></i> Download Quote PDF';
+                button.disabled = false;
+            }
+        }
+
         function addUserMessage(text) {
             const msg = document.createElement('div');
             msg.className = 'chat-message user';
@@ -705,12 +955,19 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function addBotMessage(text, requestId) {
+        function addBotMessage(text, requestId, quoteData = null) {
             const msg = document.createElement('div');
             msg.className = 'chat-message bot';
+            let contentHtml = formatMessage(text);
+            
+            // NEW: If quoteData exists, add table
+            if (quoteData) {
+                contentHtml += createQuoteTable(quoteData);
+            }
+            
             msg.innerHTML = `
                 <i class="fas fa-robot avatar"></i>
-                <div class="content">${formatMessage(text)}</div>
+                <div class="content">${contentHtml}</div>
                 <div class="feedback">
                     <button class="feedback-btn" onclick="sendFeedback('${requestId || ''}', 1)" title="Good Response"><i class="fas fa-thumbs-up"></i></button>
                     <button class="feedback-btn" onclick="sendFeedback('${requestId || ''}', 0)" title="Bad Response"><i class="fas fa-thumbs-down"></i></button>
@@ -725,7 +982,7 @@
             const typing = document.createElement('div');
             typing.className = 'typing-indicator';
             typing.id = 'typing';
-            typing.innerHTML = '<span></span><span></span><span></span>';
+            typing.innerHTML = '<span></span><span></span><span></span> Generating quote...';
             chatBox.appendChild(typing);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -767,7 +1024,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         prompt: message,
-                        history: history.slice(0, -1),  // Previous history only to avoid duplicates
+                        history: history.slice(0, -1),
                         conversation_id: conversationId
                     })
                 });
@@ -781,7 +1038,8 @@
                 }
 
                 conversationId = data.conversation_id;
-                addBotMessage(data.response, data.request_id);
+                // NEW: Pass quote_data to addBotMessage
+                addBotMessage(data.response, data.request_id, data.quote_data);
                 history.push({ role: 'assistant', content: data.response });
                 hideTyping();
                 sendBtn.disabled = false;
@@ -833,4 +1091,3 @@
     </script>
 </body>
 </html>
-
