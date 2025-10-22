@@ -9,6 +9,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Fallback for jsPDF -->
     <script>
         if (!window.jspdf) {
             document.write('<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>');
@@ -29,6 +30,7 @@
             --text-main: var(--text-dark);
             --border-color: #e0e6ed;
             --table-bg: #ffffff;
+            --table-header-bg: linear-gradient(135deg, var(--primary), var(--secondary));
         }
 
         [data-theme="dark"] {
@@ -71,7 +73,7 @@
 
         .navbar:hover {
             background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .nav-links {
@@ -726,23 +728,18 @@
         }
 
         function createQuoteContent(quoteData) {
-            let content;
-            if (quoteData.isMaxDiscount) {
-                content = `Max discount for ${quoteData.AccountName}: ${quoteData.Quantity} units of ${quoteData.ProductName}, ${quoteData.PartnerDiscount}% max discount, valid till ${quoteData.valid_until}. Generated on: ${quoteData.generated_on}.`;
-            } else {
-                content = `Quote for ${quoteData.AccountName}, a ${quoteData.customer_type} using the ${quoteData.selected_pricebook}, includes ${quoteData.Quantity} units of ${quoteData.ProductName} priced at ${formatCurrency(quoteData.UnitPrice)}/unit. After a ${quoteData.PartnerDiscount}% partner discount, the total reduces from ${formatCurrency(quoteData.RegularTotal)} to ${formatCurrency(quoteData.DiscountedTotal)}. Terms: Net 30 days. Generated on: ${quoteData.generated_on}.`;
-            }
+            const mergedText = `Quote for ${quoteData.AccountName}, a ${quoteData.customer_type} using the ${quoteData.selected_pricebook}, includes ${quoteData.Quantity} units of ${quoteData.ProductName} priced at ${formatCurrency(quoteData.UnitPrice)}/unit. After a ${quoteData.PartnerDiscount}% partner discount, the total reduces from ${formatCurrency(quoteData.RegularTotal)} to ${formatCurrency(quoteData.DiscountedTotal)}. Terms: Net 30 days. Generated on: 2025-10-11.`;
             return `
                 <div class="quote-container">
-                    <div class="quote-text">${formatMessage(content)}</div>
-                    <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId}', '${quoteData.AccountName}', '${quoteData.customer_type}', '${quoteData.selected_pricebook}', '${quoteData.ProductName}', ${quoteData.Quantity}, ${quoteData.UnitPrice}, ${quoteData.PartnerDiscount}, ${quoteData.RegularTotal}, ${quoteData.DiscountedTotal}, '${quoteData.valid_until}')">
+                    <div class="quote-text">${formatMessage(mergedText)}</div>
+                    <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId}', '${quoteData.AccountName}', '${quoteData.customer_type}', '${quoteData.selected_pricebook}', '${quoteData.ProductName}', ${quoteData.Quantity}, ${quoteData.UnitPrice}, ${quoteData.PartnerDiscount}, ${quoteData.RegularTotal}, ${quoteData.DiscountedTotal})">
                         <i class="fas fa-download"></i> Download Quote PDF
                     </button>
                 </div>
             `;
         }
 
-        async function downloadQuotePDF(button, AccountId, AccountName, customer_type, selected_pricebook, ProductName, Quantity, UnitPrice, PartnerDiscount, RegularTotal, DiscountedTotal, valid_until) {
+        async function downloadQuotePDF(button, AccountId, AccountName, customer_type, selected_pricebook, ProductName, Quantity, UnitPrice, PartnerDiscount, RegularTotal, DiscountedTotal) {
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
             console.log('Starting PDF generation for:', AccountName);
@@ -761,8 +758,8 @@
                 });
 
                 // Colors
-                const silverLight = '#EDEEEB';
-                const darkNight = '#31393C';
+                const silverLight = '#EDEEEB'; // Silver light background
+                const darkNight = '#31393C'; // Dark text
 
                 // Background
                 doc.setFillColor(silverLight);
@@ -792,7 +789,7 @@
                 doc.setFont("helvetica", "bold");
                 doc.text('Quote Details', 20, 105);
                 doc.setFontSize(10);
-                doc.setFillColor(74, 144, 226);
+                doc.setFillColor(74, 144, 226); // Skyblue
                 doc.rect(20, 115, 170, 8, 'F');
                 doc.setTextColor(255, 255, 255);
                 doc.text('Field', 22, 120);
@@ -818,11 +815,11 @@
                         doc.setFillColor(240, 244, 248);
                         doc.rect(20, yPos - 4, 170, 8, 'F');
                     }
-                    doc.setFont(field.label === 'Discounted Total' ? "helvetica" : "helvetica", field.label === 'Discounted Total' ? "bold" : "normal");
+                    doc.setFont(index === fields.length - 1 ? "helvetica" : "helvetica", index === fields.length - 1 ? "bold" : "normal");
                     if (field.label === 'Discounted Total') {
-                        doc.setTextColor(40, 167, 69);
+                        doc.setTextColor(40, 167, 69); // Green
                     } else if (field.label === 'Discount') {
-                        doc.setTextColor(255, 127, 80);
+                        doc.setTextColor(255, 127, 80); // Orange
                     } else {
                         doc.setTextColor(darkNight);
                     }
@@ -831,22 +828,32 @@
                     yPos += 8;
                 });
 
-                // Terms and Conditions
+                // Summary
                 doc.setFont("helvetica", "bold");
-                doc.setTextColor(darkNight);
-                doc.text('Terms and Conditions', 20, yPos + 10);
+                doc.text('Summary', 20, yPos + 10);
                 doc.setFont("helvetica", "normal");
                 doc.setFontSize(10);
-                doc.text('Payment Terms: Net 30 days', 20, yPos + 18);
-                doc.text(`Valid Until: ${valid_until || 'N/A'}`, 20, yPos + 26);
-                doc.text('All prices are in USD and subject to change.', 20, yPos + 34);
+                const summaryText = `Quote for ${AccountName}, a ${customer_type} using the ${selected_pricebook}, includes ${Quantity} units of ${ProductName} priced at ${formatCurrency(UnitPrice)}/unit. After a ${PartnerDiscount}% partner discount, the total reduces from ${formatCurrency(RegularTotal)} to ${formatCurrency(DiscountedTotal)}.`;
+                const splitText = doc.splitTextToSize(summaryText, 170);
+                doc.text(splitText, 20, yPos + 18);
+
+                // Terms
+                yPos += splitText.length * 6 + 15;
+                doc.setFont("helvetica", "bold");
+                doc.text('Terms & Conditions', 20, yPos);
+                doc.setFont("helvetica", "normal");
+                doc.text('• Payment Terms: Net 30 days', 20, yPos + 8);
+                doc.text('• Valid until: 30 days from generation date', 20, yPos + 14);
+                doc.text('• Prices subject to change without notice', 20, yPos + 20);
 
                 // Footer
-                doc.setFontSize(8);
-                doc.setTextColor(100, 100, 100);
-                doc.text('Generated by Quote Generator © 2025 | All rights reserved', 105, 280, { align: 'center' });
+                doc.setFontSize(10);
+                doc.setTextColor(100);
+                doc.text('Thank you for your business!', 105, 280, { align: 'center' });
+                doc.text('Generated by Quote AI Assistant', 105, 285, { align: 'center' });
 
-                doc.save(`Quote_${AccountId}.pdf`);
+                // Save PDF
+                doc.save(`Quote_${AccountId}_${Date.now()}.pdf`);
                 console.log('PDF generated successfully for', AccountName);
 
                 button.innerHTML = '<i class="fas fa-check"></i> PDF Downloaded!';
@@ -952,12 +959,6 @@
                 }
 
                 conversationId = data.conversation_id;
-                if (data.quote_data && data.quote_data.isMaxDiscount) {
-                    // Store max discount data in localStorage
-                    const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
-                    maxDiscountQuotes.push(data.quote_data);
-                    localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
-                }
                 addBotMessage(data.response, data.request_id, data.quote_data);
                 history.push({ role: 'assistant', content: data.response });
                 hideTyping();
@@ -999,6 +1000,7 @@
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             initializeChat();
+            // Check if jsPDF is loaded
             if (!window.jspdf || !window.jspdf.jsPDF) {
                 console.error('jsPDF failed to load from both CDNs');
                 alert('PDF generation library failed to load. Please check your internet connection and try again.');
