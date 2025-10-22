@@ -10,16 +10,11 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-        if (!window.jspdf) {
-            document.write('<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>');
-        }
-    </script>
     <style>
         :root {
             --primary: #4a90e2;
             --secondary: #50c9c3;
-            --accent: #28a745;
+            --accent: #ff7f50;
             --bg-light: #f0f4f8;
             --bg-dark: #1a1a2e;
             --text-dark: #333;
@@ -28,16 +23,14 @@
             --message-bot-bg: var(--secondary);
             --bg-main: var(--bg-light);
             --text-main: var(--text-dark);
-            --border-color: #e0e6ed;
         }
 
         [data-theme="dark"] {
             --bg-main: var(--bg-dark);
-            --text-main: #e0e0e0;
+            --text-main: var(--text-light);
             --bg-light: #121212;
             --message-user-bg: #3a7cc7;
             --message-bot-bg: #3ea8a2;
-            --border-color: #444;
         }
 
         body {
@@ -136,7 +129,7 @@
             align-items: center;
             text-align: center;
             z-index: 1;
-            margin-top: 60px;
+            margin-top: 60px; /* Offset for fixed navbar */
         }
 
         #particles-js {
@@ -173,7 +166,7 @@
             font-size: 1.3rem;
             font-weight: 300;
             color: var(--text-light);
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
         }
 
         .visualization-section {
@@ -203,7 +196,7 @@
 
         .visualization-container:hover {
             transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
         .visualization-container::before {
@@ -213,7 +206,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
             transition: all 0.4s ease;
         }
 
@@ -234,13 +227,13 @@
             animation: glow 1.5s ease-in-out infinite alternate;
         }
 
-        .discount-chart {
+        .quote-chart {
             height: 350px;
             transform: perspective(800px) translateZ(0);
             transition: transform 0.3s ease;
         }
 
-        .discount-chart:hover {
+        .quote-chart:hover {
             transform: perspective(800px) translateZ(20px);
         }
 
@@ -272,6 +265,45 @@
             color: var(--accent);
         }
 
+        .view-all-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-all-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .view-all-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .view-all-btn:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
         .quotes-table-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -289,7 +321,7 @@
 
         .quotes-table-container:hover {
             transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
         .quotes-table-container::before {
@@ -299,7 +331,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
             transition: all 0.4s ease;
         }
 
@@ -374,7 +406,7 @@
             left: 50%;
             width: 0;
             height: 0;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255,255,255,0.3);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.5s ease, height 0.5s ease;
@@ -388,7 +420,7 @@
         .quotes-table .download-btn:hover {
             background: var(--secondary);
             transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         footer {
@@ -405,84 +437,37 @@
         }
 
         @keyframes glow {
-            from {
-                text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent);
-            }
-            to {
-                text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary);
-            }
+            from { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent); }
+            to { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary); }
         }
 
         @keyframes slide-in {
-            from {
-                opacity: 0;
-                transform: translateX(-15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @media (max-width: 768px) {
-            .hero-section {
-                height: 30vh;
-            }
-
-            .hero-content h1 {
-                font-size: 2.2rem;
-            }
-
-            .hero-content p {
-                font-size: 1.1rem;
-            }
-
-            .visualization-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .visualization-container {
-                padding: 15px;
-            }
-
-            .visualization-container h2 {
-                font-size: 1.6rem;
-            }
-
-            .discount-chart {
-                height: 300px;
-            }
-
-            .recent-activity li {
-                font-size: 0.9rem;
-            }
-
-            .quotes-table th, .quotes-table td {
-                font-size: 0.9rem;
-                padding: 10px;
-            }
-
-            .quotes-table .download-btn {
-                font-size: 0.9rem;
-            }
-
-            .nav-links {
-                gap: 10px;
-            }
-
-            .nav-links a {
-                font-size: 0.9rem;
-                padding: 6px 10px;
-            }
+            .hero-section { height: 30vh; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-content p { font-size: 1.1rem; }
+            .visualization-grid { grid-template-columns: 1fr; }
+            .visualization-container { padding: 15px; }
+            .visualization-container h2 { font-size: 1.6rem; }
+            .quote-chart { height: 300px; }
+            .recent-activity li { font-size: 0.9rem; }
+            .quotes-table th, .quotes-table td { font-size: 0.9rem; padding: 10px; }
+            .quotes-table .download-btn { font-size: 0.9rem; }
+            .nav-links { gap: 10px; }
+            .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
         }
     </style>
 </head>
 <body data-theme="light">
     <nav class="navbar">
         <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/assistant">AI Assistant</a>
-            <a href="/dashboard">Dashboard</a>
+            <a href="">Home</a>
+            <a href="assistant">AI Assistant</a>
+            <a href="dashboard">Dashboard</a>
         </div>
         <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
     </nav>
@@ -491,38 +476,25 @@
         <div id="particles-js"></div>
         <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
             <h1>Quote Dashboard</h1>
-            <p>Unlock insights: Track max discount trends and recent activities for your quotes!</p>
+            <p>Unlock insights: Track trends, monitor activity, and manage your generated quotes with stunning visualizations and interactive tools!</p>
         </div>
     </section>
 
     <section class="visualization-section" id="visualization-section" data-aos="fade-up" data-aos-delay="100">
         <div class="visualization-grid">
-            <div class="visualization-container discount-chart" data-aos="fade-up" data-aos-delay="100">
-                <h2>Max Discount by Account</h2>
-                <canvas id="discountChart"></canvas>
+            <div class="visualization-container quote-chart" data-aos="fade-up" data-aos-delay="100">
+                <h2>Quote Trends</h2>
+                <canvas id="quoteChart"></canvas>
             </div>
             <div class="visualization-container recent-activity" data-aos="fade-up" data-aos-delay="200">
-                <h2>Latest Max Discount Query</h2>
+                <h2>Recent Activity</h2>
                 <ul id="recentActivity"></ul>
+                <button class="view-all-btn" onclick="alert('Viewing all quotes (simulated)')">View All Quotes</button>
             </div>
         </div>
     </section>
 
-    <section class="quotes-table-container" data-aos="fade-up" data-aos-delay="300">
-        <h2>Max Discount Quotes</h2>
-        <table class="quotes-table">
-            <thead>
-                <tr>
-                    <th>Account Name</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Discounted Total</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="quotesTableBody"></tbody>
-        </table>
-    </section>
+
 
     <footer>
         <p>© 2025 Quote Generator. All rights reserved. Powered by Advanced AI for Business Excellence.</p>
@@ -562,62 +534,54 @@
             themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
         });
 
-        // Fetch max discount quotes from localStorage
-        function getMaxDiscountQuotes() {
-            const quotes = localStorage.getItem('maxDiscountQuotes');
-            return quotes ? JSON.parse(quotes) : [];
-        }
-
-        // Format currency
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-        }
+        // Simulated data (since no backend)
+        let quotes = [
+            { account_name: 'Premium Account', product_name: 'Product A', quantity: 10, discounted_total: 850, regular_total: 1000, unit_price: 100, partner_discount: 15, customer_type: 'Gold', pricebook: 'Standard', created_at: new Date().toISOString(), account_id: 'ACC001' },
+            { account_name: 'Standard Account', product_name: 'Product B', quantity: 5, discounted_total: 375, regular_total: 500, unit_price: 100, partner_discount: 25, customer_type: 'Silver', pricebook: 'Bulk', created_at: new Date(Date.now() - 86400000).toISOString(), account_id: 'ACC002' },
+            { account_name: 'Enterprise Account', product_name: 'Product C', quantity: 20, discounted_total: 1600, regular_total: 2000, unit_price: 100, partner_discount: 20, customer_type: 'Platinum', pricebook: 'Enterprise', created_at: new Date(Date.now() - 172800000).toISOString(), account_id: 'ACC003' },
+            { account_name: 'Basic Account', product_name: 'Product D', quantity: 3, discounted_total: 270, regular_total: 300, unit_price: 100, partner_discount: 10, customer_type: 'Bronze', pricebook: 'Basic', created_at: new Date(Date.now() - 259200000).toISOString(), account_id: 'ACC004' },
+            { account_name: 'VIP Account', product_name: 'Product E', quantity: 15, discounted_total: 1275, regular_total: 1500, unit_price: 100, partner_discount: 15, customer_type: 'VIP', pricebook: 'VIP', created_at: new Date(Date.now() - 345600000).toISOString(), account_id: 'ACC005' }
+        ];
 
         let chartInstance = null;
 
-        function updateDiscountChart() {
-            const quotes = getMaxDiscountQuotes();
-            const ctx = document.getElementById('discountChart').getContext('2d');
-            const accounts = quotes.map(q => q.AccountName);
-            const discounts = quotes.map(q => q.PartnerDiscount);
+        function updateChart() {
+            const ctx = document.getElementById('quoteChart').getContext('2d');
+            const dates = quotes.map(q => new Date(q.created_at).toLocaleDateString());
+            const totals = quotes.map(q => q.discounted_total);
 
             if (chartInstance) chartInstance.destroy();
             chartInstance = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    labels: accounts.length ? accounts : ['Dickenson plc'],
+                    labels: dates.reverse(),
                     datasets: [{
-                        label: 'Max Discount (%)',
-                        data: discounts.length ? discounts : [5],
-                        backgroundColor: 'rgba(74, 144, 226, 0.6)',
-                        borderColor: '#4a90e2',
-                        borderWidth: 1
+                        label: 'Discounted Totals',
+                        data: totals.reverse(),
+                        borderColor: 'rgba(74, 144, 226, 1)',
+                        backgroundColor: 'rgba(74, 144, 226, 0.3)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ff7f50',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ff7f50',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: { display: true, text: 'Max Discount (%)', color: '#333', font: { size: 14 } },
-                            grid: { color: 'rgba(0,0,0,0.1)' }
-                        },
-                        x: {
-                            title: { display: true, text: 'Account Name', color: '#333', font: { size: 14 } },
-                            grid: { display: false }
-                        }
+                        y: { beginAtZero: true, title: { display: true, text: 'Amount ($)', color: '#333', font: { size: 14 } }, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { title: { display: true, text: 'Date', color: '#333', font: { size: 14 } }, grid: { display: false } }
                     },
                     plugins: {
                         legend: { display: true, position: 'top', labels: { color: '#333', font: { size: 14 } } },
-                        tooltip: {
-                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
-                            titleFont: { size: 14 },
-                            bodyFont: { size: 12 },
-                            padding: 10
-                        }
-                    }
+                        tooltip: { backgroundColor: 'rgba(26, 26, 46, 0.9)', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 10 }
+                    },
+                    interaction: { mode: 'index', intersect: false }
                 }
             });
         }
@@ -625,161 +589,108 @@
         function updateRecentActivity() {
             const recentActivity = document.getElementById('recentActivity');
             recentActivity.innerHTML = '';
-            const quotes = getMaxDiscountQuotes();
-            const latestQuote = quotes[quotes.length - 1]; // Show only the latest
-            if (latestQuote) {
+            quotes.slice(0, 5).forEach(quote => {
                 const li = document.createElement('li');
-                li.innerHTML = `<span>${latestQuote.AccountName}</span> <span class="value">${latestQuote.PartnerDiscount}%</span>`;
+                li.innerHTML = `<span>${quote.product_name}</span> <span class="value">$${quote.discounted_total.toFixed(2)}</span>`;
                 recentActivity.appendChild(li);
-            } else {
-                const li = document.createElement('li');
-                li.innerHTML = `<span>Dickenson plc</span> <span class="value">5%</span>`;
-                recentActivity.appendChild(li);
-            }
+            });
         }
 
         function updateQuotesTable() {
             const quotesTableBody = document.getElementById('quotesTableBody');
             quotesTableBody.innerHTML = '';
-            const quotes = getMaxDiscountQuotes();
             quotes.forEach(quote => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${quote.AccountName}</td>
-                    <td>${quote.ProductName}</td>
-                    <td>${quote.Quantity}</td>
-                    <td>${formatCurrency(quote.DiscountedTotal)}</td>
-                    <td><button class="download-btn" onclick="downloadQuotePDF('${quote.AccountId}', '${quote.AccountName}', '${quote.customer_type}', '${quote.selected_pricebook}', '${quote.ProductName}', ${quote.Quantity}, ${quote.UnitPrice}, ${quote.PartnerDiscount}, ${quote.RegularTotal}, ${quote.DiscountedTotal}, '${quote.valid_until}')">Download PDF</button></td>
+                    <td>${quote.account_name}</td>
+                    <td>${quote.product_name}</td>
+                    <td>${quote.quantity}</td>
+                    <td>$${quote.discounted_total.toFixed(2)}</td>
+                    <td><button class="download-btn" onclick="downloadQuotePDF(${JSON.stringify(quote).replace(/"/g, '&quot;')})">Download PDF</button></td>
                 `;
                 quotesTableBody.appendChild(tr);
             });
-            if (!quotes.length) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>Dickenson plc</td>
-                    <td>ThunderBolt Server Rack</td>
-                    <td>12</td>
-                    <td>$48,464.82</td>
-                    <td><button class="download-btn" onclick="downloadQuotePDF('ACC006', 'Dickenson plc', 'New Customer', 'Startup Program Pricing', 'ThunderBolt Server Rack', 12, 4251.30, 5, 51015.60, 48464.82, '2025-11-06')">Download PDF</button></td>
-                `;
-                quotesTableBody.appendChild(tr);
-            }
         }
 
-        function downloadQuotePDF(AccountId, AccountName, customer_type, selected_pricebook, ProductName, Quantity, UnitPrice, PartnerDiscount, RegularTotal, DiscountedTotal, valid_until) {
-            try {
-                if (!window.jspdf || !window.jspdf.jsPDF) {
-                    console.error('jsPDF not loaded');
-                    throw new Error('jsPDF library not loaded. Please check your internet connection.');
-                }
+        function downloadQuotePDF(quote) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(24);
+            doc.setTextColor(74, 144, 226);
+            doc.text('Quote Generator', 20, 20);
+            doc.setFontSize(16);
+            doc.setTextColor(255, 127, 80);
+            doc.text('Official Quote Bill', 20, 30);
 
-                // Colors
-                const silverLight = '#EDEEEB';
-                const darkNight = '#31393C';
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(51, 51, 51);
+            doc.text('Quote Generator Inc.', 20, 45);
+            doc.text('123 AI Avenue, Tech City', 20, 50);
+            doc.text('Email: contact@quotegenerator.com', 20, 55);
+            doc.text('Phone: +1-800-QUOTE-AI', 20, 60);
 
-                // Background
-                doc.setFillColor(silverLight);
-                doc.rect(0, 0, 210, 297, 'F');
+            doc.setDrawColor(74, 144, 226);
+            doc.setLineWidth(0.4);
+            doc.line(20, 65, 190, 65);
 
-                // Header
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(20);
-                doc.setTextColor(darkNight);
-                doc.text('Quote Document', 105, 20, { align: 'center' });
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "normal");
-                doc.text(`Generated on: 2025-10-11`, 105, 30, { align: 'center' });
-                doc.text(`Quote ID: Q${Date.now()}`, 105, 38, { align: 'center' });
+            doc.setFontSize(14);
+            doc.setTextColor(255, 127, 80);
+            doc.text('Bill Details', 20, 75);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(51, 51, 51);
+            const details = [
+                `Account ID: ${quote.account_id}`,
+                `Account Name: ${quote.account_name}`,
+                `Customer Type: ${quote.customer_type}`,
+                `Pricebook: ${quote.pricebook}`,
+                `Date: ${new Date(quote.created_at).toLocaleString()}`
+            ];
+            details.forEach((line, i) => doc.text(line, 20, 85 + i * 8));
 
-                // Customer Info
-                doc.setFont("helvetica", "bold");
-                doc.text('Customer Information', 20, 55);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(12);
-                doc.text(`Account: ${AccountName}`, 20, 65);
-                doc.text(`Account ID: ${AccountId}`, 20, 73);
-                doc.text(`Customer Type: ${customer_type}`, 20, 81);
-                doc.text(`Pricebook: ${selected_pricebook}`, 20, 89);
+            doc.setFillColor(74, 144, 226);
+            doc.rect(20, 120, 170, 12, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(12);
+            doc.text(['Product', 'Qty', 'Unit Price', 'Discount', 'Total'], [22, 70, 100, 140, 170], 128);
 
-                // Quote Table
-                doc.setFont("helvetica", "bold");
-                doc.text('Quote Details', 20, 105);
-                doc.setFontSize(10);
-                doc.setFillColor(74, 144, 226);
-                doc.rect(20, 115, 170, 8, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.text('Field', 22, 120);
-                doc.text('Value', 100, 120);
-                doc.setTextColor(darkNight);
+            doc.setTextColor(51, 51, 51);
+            doc.text([
+                quote.product_name.length > 20 ? quote.product_name.substring(0, 17) + '...' : quote.product_name,
+                quote.quantity.toString(),
+                `$${quote.unit_price.toFixed(2)}`,
+                `${quote.partner_discount}%`,
+                `$${quote.discounted_total.toFixed(2)}`
+            ], [22, 70, 100, 140, 170], 140);
 
-                let yPos = 128;
-                const fields = [
-                    { label: 'Account ID', value: AccountId },
-                    { label: 'Account Name', value: AccountName },
-                    { label: 'Customer Type', value: customer_type },
-                    { label: 'Pricebook', value: selected_pricebook },
-                    { label: 'Product', value: ProductName },
-                    { label: 'Quantity', value: String(Quantity) },
-                    { label: 'Unit Price', value: formatCurrency(UnitPrice) },
-                    { label: 'Discount', value: `${PartnerDiscount}%` },
-                    { label: 'Regular Total', value: formatCurrency(RegularTotal) },
-                    { label: 'Discounted Total', value: formatCurrency(DiscountedTotal) }
-                ];
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(51, 51, 51);
+            doc.text(`Regular Total: $${quote.regular_total.toFixed(2)}`, 150, 155);
+            doc.setTextColor(255, 127, 80);
+            doc.text(`Discounted Total: $${quote.discounted_total.toFixed(2)}`, 150, 165);
 
-                fields.forEach((field, index) => {
-                    if (index % 2 === 0) {
-                        doc.setFillColor(240, 244, 248);
-                        doc.rect(20, yPos - 4, 170, 8, 'F');
-                    }
-                    doc.setFont(field.label === 'Discounted Total' ? "helvetica" : "helvetica", field.label === 'Discounted Total' ? "bold" : "normal");
-                    if (field.label === 'Discounted Total') {
-                        doc.setTextColor(40, 167, 69);
-                    } else if (field.label === 'Discount') {
-                        doc.setTextColor(255, 127, 80);
-                    } else {
-                        doc.setTextColor(darkNight);
-                    }
-                    doc.text(field.label, 22, yPos);
-                    doc.text(field.value, 100, yPos);
-                    yPos += 8;
-                });
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated by Quote Generator © 2025 | All rights reserved', 20, 280);
+            doc.setDrawColor(74, 144, 226);
+            doc.setLineWidth(0.2);
+            doc.line(20, 275, 190, 275);
 
-                // Terms and Conditions
-                doc.setFont("helvetica", "bold");
-                doc.setTextColor(darkNight);
-                doc.text('Terms and Conditions', 20, yPos + 10);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(10);
-                doc.text('Payment Terms: Net 30 days', 20, yPos + 18);
-                doc.text(`Valid Until: ${valid_until || 'N/A'}`, 20, yPos + 26);
-                doc.text('All prices are in USD and subject to change.', 20, yPos + 34);
-
-                // Footer
-                doc.setFontSize(8);
-                doc.setTextColor(100, 100, 100);
-                doc.text('Generated by Quote Generator © 2025 | All rights reserved', 105, 280, { align: 'center' });
-
-                doc.save(`Quote_${AccountId}.pdf`);
-                console.log('PDF generated successfully for', AccountName);
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert(`Failed to generate PDF: ${error.message}. Please try again.`);
-            }
+            doc.save(`Quote_${quote.account_id}.pdf`);
         }
 
         // Refresh visualizations on load
         document.addEventListener('DOMContentLoaded', () => {
-            updateDiscountChart();
+            updateChart();
             updateRecentActivity();
             updateQuotesTable();
         });
     </script>
 </body>
+
 </html>
