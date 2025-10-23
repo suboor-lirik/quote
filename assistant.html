@@ -613,7 +613,7 @@
         <div class="chat-container">
             <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Assistant AI</h2>
             <div class="quick-replies" id="quickReplies">
-                <button class="quick-reply-btn" onclick="quickReply('generate quote for Dickenson plc with quantity 7 of ThunderBolt Server Rack')">Generate Quote</button>
+                <button class="quick-reply-btn" onclick="quickReply('generate quote for GenePoint for Quantity 12 for product ThunderBolt Server Rack')">Generate Quote</button>
                 <button class="quick-reply-btn" onclick="quickReply('calculate max discount for Express Logistics and Transport for quantity 12 for product ThunderBolt Server Rack')">Max Discount</button>
             </div>
             <div class="chat-box" id="chatBox"></div>
@@ -713,6 +713,7 @@
         }
 
         function createQuoteContent(quoteData) {
+            console.log('createQuoteContent input:', JSON.stringify(quoteData)); // Debug log
             let content;
             if (quoteData.isMaxDiscount) {
                 const accountName = quoteData.AccountName || 'N/A';
@@ -727,15 +728,25 @@
                 `;
                 return `<div class="quote-container"><div class="quote-text">${formatMessage(content)}</div></div>`;
             } else {
+                // Ensure PDF button is included for quote generation
+                const accountName = quoteData.AccountName || 'N/A';
+                const customerType = quoteData.customer_type || 'N/A';
+                const pricebook = quoteData.selected_pricebook || 'Standard Pricebook';
+                const productName = quoteData.ProductName || 'N/A';
+                const quantity = quoteData.Quantity || 'N/A';
+                const unitPrice = quoteData.UnitPrice ? formatCurrency(quoteData.UnitPrice) : 'N/A';
+                const partnerDiscount = quoteData.PartnerDiscount || '0';
+                const regularTotal = quoteData.RegularTotal ? formatCurrency(quoteData.RegularTotal) : 'N/A';
+                const discountedTotal = quoteData.DiscountedTotal ? formatCurrency(quoteData.DiscountedTotal) : 'N/A';
                 content = `
-                    Based on the provided inputs, the quote for Account Name: ${quoteData.AccountName || 'N/A'}, which is a ${quoteData.customer_type || 'N/A'}, has been created under the Selected Pricebook: ${quoteData.selected_pricebook || 'N/A'}.<br>
-                    The Product Name: ${quoteData.ProductName || 'N/A'} has been quoted for Quantity: ${quoteData.Quantity || 'N/A'} Units at a Unit Price: ${quoteData.UnitPrice ? formatCurrency(quoteData.UnitPrice) : 'N/A'}, with a Partner Discount: ${quoteData.PartnerDiscount || 'N/A'}% applied.<br>
-                    After applying the discount, the Regular Total: ${quoteData.RegularTotal ? formatCurrency(quoteData.RegularTotal) : 'N/A'} has been reduced to a Discounted Total: ${quoteData.DiscountedTotal ? formatCurrency(quoteData.DiscountedTotal) : 'N/A'}.
+                    Based on the provided inputs, the quote for Account Name: ${accountName}, which is a ${customerType}, has been created under the Selected Pricebook: ${pricebook}.<br>
+                    The Product Name: ${productName} has been quoted for Quantity: ${quantity} Units at a Unit Price: ${unitPrice}, with a Partner Discount: ${partnerDiscount}% applied.<br>
+                    After applying the discount, the Regular Total: ${regularTotal} has been reduced to a Discounted Total: ${discountedTotal}.
                 `;
                 return `
                     <div class="quote-container">
                         <div class="quote-text">${formatMessage(content)}</div>
-                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId || 'N/A'}', '${quoteData.AccountName || 'N/A'}', '${quoteData.customer_type || 'N/A'}', '${quoteData.selected_pricebook || 'N/A'}', '${quoteData.ProductName || 'N/A'}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${quoteData.PartnerDiscount || 0}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || 'N/A'}')">
+                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId || 'N/A'}', '${accountName}', '${customerType}', '${pricebook}', '${productName}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${partnerDiscount}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || new Date().toISOString().split('T')[0]}')">
                             <i class="fas fa-download"></i> Download Quote PDF
                         </button>
                     </div>
@@ -962,6 +973,16 @@
 
                 console.log('Backend response:', JSON.stringify(data));
                 conversationId = data.conversation_id;
+
+                // Fix calculation errors in quote_data
+                if (data.quote_data && !data.quote_data.isMaxDiscount) {
+                    const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
+                    const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
+                    const discountedTotal = regularTotal * discountFactor;
+                    data.quote_data.RegularTotal = regularTotal;
+                    data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2)); // Fix rounding
+                }
+
                 if (data.quote_data && data.quote_data.isMaxDiscount) {
                     const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
                     const normalizedQuote = {
@@ -973,7 +994,7 @@
                         valid_until: data.quote_data.Offer_Valid_Till || 'N/A',
                         AccountId: data.quote_data.AccountId || 'N/A',
                         customer_type: data.quote_data.customer_type || 'N/A',
-                        selected_pricebook: data.quote_data.selected_pricebook || 'N/A',
+                        selected_pricebook: data.quote_data.selected_pricebook || 'Standard Pricebook',
                         UnitPrice: data.quote_data.UnitPrice || 0,
                         RegularTotal: data.quote_data.RegularTotal || 0,
                         DiscountedTotal: data.quote_data.DiscountedTotal || 0
@@ -981,6 +1002,7 @@
                     maxDiscountQuotes.push(normalizedQuote);
                     localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
                 }
+
                 addBotMessage(data.response, data.request_id, data.quote_data);
                 history.push({ role: 'assistant', content: data.response });
                 hideTyping();
