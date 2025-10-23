@@ -16,9 +16,9 @@
     </script>
     <style>
         :root {
-            --primary: #4a90e2; /* Skyblue */
-            --secondary: #50c9c3; /* Teal */
-            --accent: #28a745; /* Green */
+            --primary: #4a90e2;
+            --secondary: #50c9c3;
+            --accent: #28a745;
             --bg-light: #f0f4f8;
             --bg-dark: #1a1a2e;
             --text-dark: #333;
@@ -93,7 +93,7 @@
 
         .nav-links a::before {
             content: '';
-            spelers: absolute;
+            position: absolute;
             top: 50%;
             left: 50%;
             width: 0;
@@ -720,18 +720,16 @@
         }
 
         function renderQuickReplies(accounts, products) {
-            quickReplies.innerHTML = ''; // Clear existing buttons
-            const defaultQuantity = 12; // Default quantity for demo
+            quickReplies.innerHTML = '';
+            const defaultQuantity = 12;
             accounts.forEach(account => {
                 products.forEach(product => {
-                    // Quote button
                     const quoteBtn = document.createElement('button');
                     quoteBtn.className = 'quick-reply-btn';
                     quoteBtn.textContent = `Quote for ${account.AccountName}`;
                     quoteBtn.onclick = () => quickReply(`generate quote for ${account.AccountName} for Quantity ${defaultQuantity} for product ${product.ProductName}`);
                     quickReplies.appendChild(quoteBtn);
 
-                    // Max discount button
                     const maxDiscountBtn = document.createElement('button');
                     maxDiscountBtn.className = 'quick-reply-btn';
                     maxDiscountBtn.textContent = `Max Discount for ${account.AccountName}`;
@@ -946,11 +944,18 @@
             msg.className = 'chat-message bot';
             let contentHtml;
             if (quoteData) {
-                console.log('Backend quote_data:', JSON.stringify(quoteData));
-                contentHtml = createQuoteContent(quoteData);
-            } else {
+                try {
+                    console.log('Backend quote_data:', JSON.stringify(quoteData));
+                    contentHtml = createQuoteContent(quoteData);
+                } catch (error) {
+                    console.error('Error processing quoteData:', error);
+                    contentHtml = '<p>Error: Unable to process quote data. Please try again.</p>';
+                }
+            } else if (text) {
                 console.log('Backend response (no quote_data):', text);
                 contentHtml = formatMessage(text);
+            } else {
+                contentHtml = '<p>Error: No valid response or quote data received.</p>';
             }
             
             msg.innerHTML = `
@@ -1028,38 +1033,49 @@
                 console.log('Backend response:', JSON.stringify(data));
                 conversationId = data.conversation_id;
 
-                // Fix calculation errors in quote_data
-                if (data.quote_data && !data.quote_data.isMaxDiscount) {
-                    const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
-                    const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
-                    const discountedTotal = regularTotal * discountFactor;
-                    data.quote_data.RegularTotal = regularTotal;
-                    data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
+                // Parse quote_data if it's a string
+                let quoteData = data.quote_data;
+                if (typeof data.output === 'string') {
+                    try {
+                        quoteData = JSON.parse(data.output);
+                        quoteData.isMaxDiscount = message.toLowerCase().includes('max discount');
+                    } catch (error) {
+                        console.error('Error parsing quote_data:', error);
+                        quoteData = null;
+                    }
                 }
 
-                if (data.quote_data && data.quote_data.isMaxDiscount) {
+                // Fix calculation errors in quote_data for non-max discount
+                if (quoteData && !quoteData.isMaxDiscount) {
+                    const regularTotal = quoteData.Quantity * quoteData.UnitPrice;
+                    const discountFactor = 1 - (quoteData.PartnerDiscount / 100);
+                    const discountedTotal = regularTotal * discountFactor;
+                    quoteData.RegularTotal = regularTotal;
+                    quoteData.DiscountedTotal = Number(discountedTotal.toFixed(2));
+                }
+
+                if (quoteData && quoteData.isMaxDiscount) {
                     const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
                     const normalizedQuote = {
-                        AccountName: data.quote_data.AccountName || 'N/A',
-                        ProductName: data.quote_data.ProductName || 'N/A',
-                        Quantity: data.quote_data.Quantity || 0,
-                        PartnerDiscount: parseFloat(data.quote_data['Max_Discount(%)'] || '0'),
-                        generated_on: data.quote_data.generated_on || new Date().toISOString().split('T')[0],
-                        valid_until: data.quote_data.Offer_Valid_Till || 'N/A',
-                        AccountId: data.quote_data.AccountId || 'N/A',
-                        customer_type: data.quote_data.customer_type || 'N/A',
-                        selected_pricebook: data.quote_data.selected_pricebook || 'Standard Pricebook',
-                        UnitPrice: data.quote_data.UnitPrice || 0,
-                        RegularTotal: data.quote_data.RegularTotal || 0,
-                        DiscountedTotal: data.quote_data.DiscountedTotal || 0
+                        AccountName: quoteData.AccountName || 'N/A',
+                        ProductName: quoteData.ProductName || 'N/A',
+                        Quantity: quoteData.Quantity || 0,
+                        PartnerDiscount: parseFloat(quoteData['Max_Discount(%)'] || '0'),
+                        generated_on: quoteData.generated_on || new Date().toISOString().split('T')[0],
+                        valid_until: quoteData.Offer_Valid_Till || 'N/A',
+                        AccountId: quoteData.AccountId || 'N/A',
+                        customer_type: quoteData.customer_type || 'N/A',
+                        selected_pricebook: quoteData.selected_pricebook || 'Standard Pricebook',
+                        UnitPrice: quoteData.UnitPrice || 0,
+                        RegularTotal: quoteData.RegularTotal || 0,
+                        DiscountedTotal: quoteData.DiscountedTotal || 0
                     };
                     maxDiscountQuotes.push(normalizedQuote);
                     localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
                 }
 
-                // Always use createQuoteContent if quoteData is present
-                addBotMessage(null, data.request_id, data.quote_data);
-                history.push({ role: 'assistant', content: data.response });
+                addBotMessage(null, data.request_id, quoteData);
+                history.push({ role: 'assistant', content: data.response || JSON.stringify(quoteData) });
                 hideTyping();
                 sendBtn.disabled = false;
                 chatInput.focus();
