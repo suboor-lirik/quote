@@ -992,6 +992,22 @@
                        .replace(/\n/g, '<br>');
         }
 
+        function parseMaxDiscountText(text) {
+            const regex = /Max discount for (.*?): (\d+) units of (.*?), ([\d.]+)% max discount, valid till (\d{4}-\d{2}-\d{2})/;
+            const match = text.match(regex);
+            if (match) {
+                return {
+                    AccountName: match[1],
+                    Quantity: parseInt(match[2]),
+                    ProductName: match[3],
+                    'Max_Discount(%)': match[4],
+                    Offer_Valid_Till: match[5],
+                    isMaxDiscount: true
+                };
+            }
+            return null;
+        }
+
         function showQuickReplies(show) {
             quickReplies.style.display = show ? 'flex' : 'none';
         }
@@ -1031,18 +1047,24 @@
                 }
 
                 console.log('Backend response:', JSON.stringify(data));
-                conversationId = data.conversation_id;
+                conversationId = data.id;
 
-                // Parse quote_data if it's a string
                 let quoteData = data.quote_data;
-                if (typeof data.output === 'string') {
+                let responseText = data.content && data.content[0] && data.content[0].text ? data.content[0].text : data.response;
+
+                // Try parsing quote_data from data.output
+                if (data.output && typeof data.output === 'string') {
                     try {
                         quoteData = JSON.parse(data.output);
                         quoteData.isMaxDiscount = message.toLowerCase().includes('max discount');
                     } catch (error) {
                         console.error('Error parsing quote_data:', error);
-                        quoteData = null;
                     }
+                }
+
+                // Fallback to parsing content.text for max discount if quote_data is invalid or missing
+                if (!quoteData && message.toLowerCase().includes('max discount') && responseText) {
+                    quoteData = parseMaxDiscountText(responseText);
                 }
 
                 // Fix calculation errors in quote_data for non-max discount
@@ -1074,8 +1096,8 @@
                     localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
                 }
 
-                addBotMessage(null, data.request_id, quoteData);
-                history.push({ role: 'assistant', content: data.response || JSON.stringify(quoteData) });
+                addBotMessage(responseText, data.request_id || data.id, quoteData);
+                history.push({ role: 'assistant', content: responseText || JSON.stringify(quoteData) });
                 hideTyping();
                 sendBtn.disabled = false;
                 chatInput.focus();
