@@ -612,10 +612,7 @@
     <section class="chat-main-section" id="chat-section" data-aos="fade-up" data-aos-delay="400">
         <div class="chat-container">
             <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Assistant AI</h2>
-            <div class="quick-replies" id="quickReplies">
-                <button class="quick-reply-btn" onclick="quickReply('generate quote for GenePoint for Quantity 12 for product ThunderBolt Server Rack')">Generate Quote</button>
-                <button class="quick-reply-btn" onclick="quickReply('calculate max discount for Express Logistics and Transport for quantity 12 for product ThunderBolt Server Rack')">Max Discount</button>
-            </div>
+            <div class="quick-replies" id="quickReplies"></div>
             <div class="chat-box" id="chatBox"></div>
             <div class="chat-input-container">
                 <button class="attach-btn" title="Attach File"><i class="fas fa-paperclip"></i></button>
@@ -703,6 +700,47 @@
             alert(isRecording ? 'Voice recording started! (Simulated)' : 'Voice recording stopped! (Simulated)');
         });
 
+        // Fetch and render dynamic quick replies
+        async function fetchQuickReplies() {
+            try {
+                const response = await fetch('/get_quick_replies', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                if (data.error) {
+                    console.error('Error fetching quick replies:', data.error);
+                    return;
+                }
+                renderQuickReplies(data.accounts, data.products);
+            } catch (error) {
+                console.error('Failed to fetch quick replies:', error);
+                quickReplies.innerHTML = '<p>Error loading quick replies. Please try again.</p>';
+            }
+        }
+
+        function renderQuickReplies(accounts, products) {
+            quickReplies.innerHTML = ''; // Clear existing buttons
+            const defaultQuantity = 12; // Default quantity for demo
+            accounts.forEach(account => {
+                products.forEach(product => {
+                    // Quote button
+                    const quoteBtn = document.createElement('button');
+                    quoteBtn.className = 'quick-reply-btn';
+                    quoteBtn.textContent = `Quote for ${account.AccountName}`;
+                    quoteBtn.onclick = () => quickReply(`generate quote for ${account.AccountName} for Quantity ${defaultQuantity} for product ${product.ProductName}`);
+                    quickReplies.appendChild(quoteBtn);
+
+                    // Max discount button
+                    const maxDiscountBtn = document.createElement('button');
+                    maxDiscountBtn.className = 'quick-reply-btn';
+                    maxDiscountBtn.textContent = `Max Discount for ${account.AccountName}`;
+                    maxDiscountBtn.onclick = () => quickReply(`calculate max discount for ${account.AccountName} for quantity ${defaultQuantity} for product ${product.ProductName}`);
+                    quickReplies.appendChild(maxDiscountBtn);
+                });
+            });
+        }
+
         function formatCurrency(value) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -713,7 +751,7 @@
         }
 
         function createQuoteContent(quoteData) {
-            console.log('createQuoteContent input:', JSON.stringify(quoteData)); // Debug log
+            console.log('createQuoteContent input:', JSON.stringify(quoteData));
             let content;
             if (quoteData.isMaxDiscount) {
                 const accountName = quoteData.AccountName || 'N/A';
@@ -728,7 +766,6 @@
                 `;
                 return `<div class="quote-container"><div class="quote-text">${formatMessage(content)}</div></div>`;
             } else {
-                // Ensure PDF button is included for quote generation
                 const accountName = quoteData.AccountName || 'N/A';
                 const customerType = quoteData.customer_type || 'N/A';
                 const pricebook = quoteData.selected_pricebook || 'Standard Pricebook';
@@ -980,7 +1017,7 @@
                     const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
                     const discountedTotal = regularTotal * discountFactor;
                     data.quote_data.RegularTotal = regularTotal;
-                    data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2)); // Fix rounding
+                    data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
                 }
 
                 if (data.quote_data && data.quote_data.isMaxDiscount) {
@@ -1033,11 +1070,12 @@
         }
 
         // Initialize chat
-        function initializeChat() {
+        async function initializeChat() {
             conversationId = 'convo-' + Date.now();
             const welcomeMsg = "Welcome to Quote Assistant AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! 😊 💼 📈";
             addBotMessage(welcomeMsg, null);
             history.push({ role: 'assistant', content: welcomeMsg });
+            await fetchQuickReplies();
             showQuickReplies(true);
         }
 
