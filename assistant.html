@@ -30,7 +30,6 @@
             --border-color: #e0e6ed;
             --table-bg: #ffffff;
         }
-
         [data-theme="dark"] {
             --bg-main: var(--bg-dark);
             --text-main: #e0e0e0;
@@ -40,7 +39,6 @@
             --border-color: #444;
             --table-bg: #2a2a2a;
         }
-
         body {
             margin: 0;
             padding: 0;
@@ -52,7 +50,6 @@
             position: relative;
             transition: background 0.3s ease, color 0.3s ease;
         }
-
         .navbar {
             position: fixed;
             top: 0;
@@ -68,17 +65,14 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
-
         .navbar:hover {
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
         .nav-links {
             display: flex;
             gap: 20px;
         }
-
         .nav-links a {
             color: var(--text-main);
             text-decoration: none;
@@ -90,7 +84,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .nav-links a::before {
             content: '';
             position: absolute;
@@ -103,17 +96,14 @@
             transform: translate(-50%, -50%);
             transition: width 0.5s ease, height 0.5s ease;
         }
-
         .nav-links a:hover::before {
             width: 200px;
             height: 200px;
         }
-
         .nav-links a:hover {
             color: var(--primary);
             transform: translateY(-2px);
         }
-
         .theme-toggle {
             background: none;
             border: none;
@@ -122,11 +112,9 @@
             cursor: pointer;
             transition: transform 0.3s ease;
         }
-
         .theme-toggle:hover {
             transform: rotate(180deg);
         }
-
         .hero-section {
             height: 40vh;
             position: relative;
@@ -139,7 +127,6 @@
             z-index: 1;
             margin-top: 60px;
         }
-
         #particles-js {
             position: absolute;
             width: 100%;
@@ -148,13 +135,11 @@
             left: 0;
             z-index: 1;
         }
-
         .hero-content {
             z-index: 2;
             max-width: 800px;
             padding: 15px;
         }
-
         .hero-content h1 {
             font-size: 3rem;
             font-weight: 800;
@@ -165,18 +150,15 @@
             transition: transform 0.3s ease;
             text-shadow: 0 0 10px var(--accent), 0 0 15px var(--secondary);
         }
-
         .hero-content h1:hover {
             transform: perspective(500px) translateZ(20px);
         }
-
         .hero-content p {
             font-size: 1.3rem;
             font-weight: 300;
             color: var(--text-light);
             text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
         }
-
         .chat-main-section {
             padding: 20px;
             width: 100%;
@@ -186,7 +168,6 @@
             display: flex;
             flex-direction: column;
         }
-
         .chat-container {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -203,12 +184,10 @@
             width: 100%;
             box-sizing: border-box;
         }
-
         .chat-container:hover {
             transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-
         .chat-container::before {
             content: '';
             position: absolute;
@@ -219,12 +198,10 @@
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
             transition: all 0.4s ease;
         }
-
         .chat-container:hover::before {
             top: -100%;
             left: -100%;
         }
-
         .chat-header {
             display: flex;
             align-items: center;
@@ -238,20 +215,17 @@
             margin-bottom: 20px;
             animation: glow 1.5s ease-in-out infinite alternate;
         }
-
         .bot-avatar {
             font-size: 2rem;
             margin-right: 10px;
             color: var(--accent);
             animation: pulse 1.5s infinite;
         }
-
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
-
         .quick-replies {
             display: flex;
             flex-wrap: wrap;
@@ -259,7 +233,6 @@
             margin-bottom: 15px;
             justify-content: center;
         }
-
         .quick-reply-btn {
             padding: 10px 20px;
             background: rgba(255, 255, 255, 0.2);
@@ -272,14 +245,12 @@
             position: relative;
             overflow: hidden;
         }
-
         .quick-reply-btn:hover {
             background: var(--primary);
             color: var(--text-light);
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-
         .chat-box {
             flex-grow: 1;
             background: rgba(255, 255, 255, 0.1);
@@ -294,20 +265,16 @@
             scrollbar-width: thin;
             scrollbar-color: var(--accent) transparent;
         }
-
         .chat-box::-webkit-scrollbar {
             width: 8px;
         }
-
         .chat-box::-webkit-scrollbar-track {
             background: transparent;
         }
-
         .chat-box::-webkit-scrollbar-thumb {
             background: var(--accent);
             border-radius: 4px;
         }
-
         .quote-container {
             background: var(--table-bg);
             border-radius: 12px;
@@ -316,14 +283,12 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
         .quote-text {
             font-size: 1rem;
             line-height: 1.6;
             color: var(--text-dark);
             margin-bottom: 15px;
         }
-
         .pdf-download-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--text-light);
@@ -339,13 +304,11 @@
             gap: 8px;
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
         }
-
         .pdf-download-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
             background: linear-gradient(135deg, var(--secondary), var(--primary));
         }
-
         .chat-message {
             display: flex;
             align-items: flex-start;
@@ -353,20 +316,17 @@
             animation: slide-in 0.4s ease-out;
             position: relative;
         }
-
         .chat-message .avatar {
             font-size: 1.5rem;
             margin-right: 10px;
             color: var(--accent);
             flex-shrink: 0;
         }
-
         .chat-message.user .avatar {
             margin-left: 10px;
             margin-right: 0;
             order: 2;
         }
-
         .chat-message .content {
             padding: 12px 18px;
             border-radius: 18px;
@@ -377,38 +337,31 @@
             background: var(--message-bot-bg);
             color: var(--text-light);
         }
-
         .chat-message.user {
             align-self: flex-end;
             flex-direction: row-reverse;
         }
-
         .chat-message.user .content {
             background: var(--message-user-bg);
             color: var(--text-light);
             border-bottom-right-radius: 4px;
             text-align: right;
         }
-
         .chat-message.bot {
             align-self: flex-start;
         }
-
         .chat-message.bot .content {
             border-bottom-left-radius: 4px;
         }
-
         .chat-message .feedback {
             display: flex;
             gap: 5px;
             margin-top: 5px;
             justify-content: flex-end;
         }
-
         .chat-message.bot .feedback {
             justify-content: flex-start;
         }
-
         .feedback-btn {
             background: none;
             border: none;
@@ -417,17 +370,14 @@
             font-size: 0.8rem;
             transition: color 0.3s ease;
         }
-
         .feedback-btn:hover {
             color: var(--accent);
         }
-
         .chat-input-container {
             display: flex;
             gap: 10px;
             position: relative;
         }
-
         .attach-btn, .emoji-btn, .voice-btn {
             padding: 15px;
             background: var(--secondary);
@@ -437,12 +387,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .attach-btn:hover, .emoji-btn:hover, .voice-btn:hover {
             background: var(--accent);
             transform: scale(1.1);
         }
-
         .emoji-picker {
             position: absolute;
             bottom: 60px;
@@ -455,7 +403,6 @@
             z-index: 20;
             border: 1px solid var(--border-color);
         }
-
         .emoji-picker button {
             background: none;
             border: none;
@@ -465,12 +412,10 @@
             border-radius: 5px;
             transition: background 0.2s;
         }
-
         .emoji-picker button:hover {
             background: var(--primary);
             color: var(--text-light);
         }
-
         .chat-input {
             flex-grow: 1;
             padding: 15px;
@@ -482,13 +427,11 @@
             outline: none;
             transition: all 0.3s ease;
         }
-
         .chat-input:focus {
             border-color: var(--accent);
             background: rgba(255, 255, 255, 0.1);
             box-shadow: 0 0 10px rgba(28, 167, 69, 0.3);
         }
-
         .chat-send-btn {
             padding: 15px 30px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -502,7 +445,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .chat-send-btn::before {
             content: '';
             position: absolute;
@@ -515,23 +457,19 @@
             transform: translate(-50%, -50%);
             transition: width 0.5s ease, height 0.5s ease;
         }
-
         .chat-send-btn:hover::before {
             width: 300px;
             height: 300px;
         }
-
         .chat-send-btn:hover {
             background: linear-gradient(135deg, var(--secondary), var(--accent));
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-
         .chat-send-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
-
         .typing-indicator {
             display: flex;
             align-items: center;
@@ -544,7 +482,6 @@
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
-
         .typing-indicator span {
             height: 8px;
             width: 8px;
@@ -553,30 +490,24 @@
             display: inline-block;
             animation: typing 1s infinite;
         }
-
         .typing-indicator span:nth-child(2) {
             animation-delay: 0.2s;
         }
-
         .typing-indicator span:nth-child(3) {
             animation-delay: 0.4s;
         }
-
         @keyframes typing {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
         }
-
         @keyframes glow {
             from { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent); }
             to { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary); }
         }
-
         @keyframes slide-in {
             from { opacity: 0; transform: translateX(-15px); }
             to { opacity: 1; transform: translateX(0); }
         }
-
         @media (max-width: 768px) {
             .hero-section { height: 30vh; }
             .hero-content h1 { font-size: 2.2rem; }
@@ -600,7 +531,6 @@
         </div>
         <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
     </nav>
-
     <section class="hero-section">
         <div id="particles-js"></div>
         <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
@@ -608,7 +538,6 @@
             <p>Your intelligent companion for instant quote generation & max discount calculations!</p>
         </div>
     </section>
-
     <section class="chat-main-section" id="chat-section" data-aos="fade-up" data-aos-delay="400">
         <div class="chat-container">
             <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Assistant AI</h2>
@@ -630,7 +559,6 @@
             </div>
         </div>
     </section>
-
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Initialize Particles.js
@@ -653,10 +581,8 @@
                 retina_detect: true
             });
         }
-
         // Initialize AOS
         AOS.init({ duration: 1200, once: true, easing: 'ease-in-out-sine' });
-
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.body.getAttribute('data-theme');
@@ -664,7 +590,6 @@
             document.body.setAttribute('data-theme', newTheme);
             themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
         });
-
         let conversationId = null;
         let history = [];
         const chatBox = document.getElementById('chatBox');
@@ -675,23 +600,19 @@
         const emojiBtn = document.getElementById('emojiBtn');
         const emojiPicker = document.getElementById('emojiPicker');
         const attachBtn = document.querySelector('.attach-btn');
-
         // Simulate attachment
         attachBtn.addEventListener('click', () => {
             alert('Attachment feature: Upload files for quote analysis (Simulated)');
         });
-
         // Emoji picker toggle
         emojiBtn.addEventListener('click', () => {
             emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
         });
-
         function insertEmoji(emoji) {
             chatInput.value += emoji;
             chatInput.focus();
             emojiPicker.style.display = 'none';
         }
-
         // Simulate speech recognition
         let isRecording = false;
         voiceBtn.addEventListener('click', () => {
@@ -699,7 +620,6 @@
             voiceBtn.style.background = isRecording ? '#28a745' : 'var(--secondary)';
             alert(isRecording ? 'Voice recording started! (Simulated)' : 'Voice recording stopped! (Simulated)');
         });
-
         // Fetch and render dynamic quick replies
         async function fetchQuickReplies() {
             try {
@@ -718,7 +638,6 @@
                 quickReplies.innerHTML = '<p>Error loading quick replies. Please try again.</p>';
             }
         }
-
         function renderQuickReplies(accounts, products) {
             quickReplies.innerHTML = ''; // Clear existing buttons
             const defaultQuantity = 12; // Default quantity for demo
@@ -730,7 +649,6 @@
                     quoteBtn.textContent = `Quote for ${account.AccountName}`;
                     quoteBtn.onclick = () => quickReply(`generate quote for ${account.AccountName} for Quantity ${defaultQuantity} for product ${product.ProductName}`);
                     quickReplies.appendChild(quoteBtn);
-
                     // Max discount button
                     const maxDiscountBtn = document.createElement('button');
                     maxDiscountBtn.className = 'quick-reply-btn';
@@ -740,7 +658,6 @@
                 });
             });
         }
-
         function formatCurrency(value) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -749,18 +666,15 @@
                 maximumFractionDigits: 2
             }).format(value);
         }
-
         function createQuoteContent(quoteData) {
             console.log('createQuoteContent input:', JSON.stringify(quoteData));
             let content;
-
             if (quoteData.isMaxDiscount) {
                 const accountName = quoteData.AccountName || 'N/A';
                 const productName = quoteData.ProductName || 'N/A';
                 const quantity = quoteData.Quantity || 'N/A';
                 const maxDiscount = quoteData['Max_Discount(%)'] || 'N/A';
                 const validTill = quoteData.Offer_Valid_Till || 'N/A';
-
                 content = `
                     <p><strong>Based on the above inputs, the maximum discount has been calculated as:</strong></p>
                     <ul style="list-style: none; padding-left: 0;">
@@ -782,7 +696,6 @@
                 const partnerDiscount = quoteData.PartnerDiscount || '0';
                 const regularTotal = quoteData.RegularTotal ? formatCurrency(quoteData.RegularTotal) : 'N/A';
                 const discountedTotal = quoteData.DiscountedTotal ? formatCurrency(quoteData.DiscountedTotal) : 'N/A';
-
                 content = `
                     <p><strong>Based on the above inputs, the quote has been generated as:</strong></p>
                     <ul style="list-style: none; padding-left: 0;">
@@ -807,32 +720,26 @@
                 `;
             }
         }
-
         async function downloadQuotePDF(button, AccountId, AccountName, customer_type, selected_pricebook, ProductName, Quantity, UnitPrice, PartnerDiscount, RegularTotal, DiscountedTotal, generated_on) {
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
             console.log('Starting PDF generation for:', AccountName);
-
             try {
                 if (!window.jspdf || !window.jspdf.jsPDF) {
                     console.error('jsPDF not loaded');
                     throw new Error('jsPDF library not loaded. Please check your internet connection.');
                 }
-
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
                     format: 'a4'
                 });
-
                 const silverLight = '#EDEEEB';
                 const darkNight = '#31393C';
                 const skyBlue = '#4a90e2';
-
                 doc.setFillColor(silverLight);
                 doc.rect(0, 0, 210, 297, 'F');
-
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(20);
                 doc.setTextColor(darkNight);
@@ -841,7 +748,6 @@
                 doc.setFont("helvetica", "normal");
                 doc.text(`Generated on: ${generated_on}`, 105, 30, { align: 'center' });
                 doc.text(`Quote ID: Q${Date.now()}`, 105, 38, { align: 'center' });
-
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(14);
                 doc.text('Customer Information', 20, 55);
@@ -851,7 +757,6 @@
                 doc.text(`Account ID: ${AccountId}`, 20, 73);
                 doc.text(`Customer Type: ${customer_type}`, 20, 81);
                 doc.text(`Pricebook: ${selected_pricebook}`, 20, 89);
-
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(14);
                 doc.text('Quote Details', 20, 105);
@@ -862,7 +767,6 @@
                 doc.text('Field', 22, 120);
                 doc.text('Value', 100, 120);
                 doc.setTextColor(darkNight);
-
                 let yPos = 128;
                 const fields = [
                     { label: 'Account ID', value: AccountId },
@@ -876,7 +780,6 @@
                     { label: 'Regular Total', value: formatCurrency(RegularTotal) },
                     { label: 'Discounted Total', value: formatCurrency(DiscountedTotal) }
                 ];
-
                 fields.forEach((field, index) => {
                     if (index % 2 === 0) {
                         doc.setFillColor(240, 244, 248);
@@ -888,7 +791,6 @@
                     doc.text(field.value, 100, yPos);
                     yPos += 8;
                 });
-
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(14);
                 doc.text('Summary', 20, yPos + 10);
@@ -897,7 +799,6 @@
                 const summaryText = `Based on the provided inputs, the quote for Account Name: ${AccountName}, which is a ${customer_type}, has been created under the Selected Pricebook: ${selected_pricebook}. The Product Name: ${ProductName} has been quoted for Quantity: ${Quantity} Units at a Unit Price: ${formatCurrency(UnitPrice)}, with a Partner Discount: ${PartnerDiscount}% applied. After applying the discount, the Regular Total: ${formatCurrency(RegularTotal)} has been reduced to a Discounted Total: ${formatCurrency(DiscountedTotal)}.`;
                 const splitText = doc.splitTextToSize(summaryText, 170);
                 doc.text(splitText, 20, yPos + 18);
-
                 yPos += splitText.length * 6 + 15;
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(14);
@@ -907,15 +808,12 @@
                 doc.text('• Payment Terms: Net 30 days', 20, yPos + 8);
                 doc.text('• Valid until: 30 days from generation date', 20, yPos + 14);
                 doc.text('• Prices subject to change without notice', 20, yPos + 20);
-
                 doc.setFontSize(8);
                 doc.setTextColor(darkNight);
                 doc.text('Thank you for your business!', 105, 280, { align: 'center' });
                 doc.text('Generated by Quote AI Assistant | © 2025 All rights reserved', 105, 285, { align: 'center' });
-
                 doc.save(`Quote_${AccountId}_${Date.now()}.pdf`);
                 console.log('PDF generated successfully for', AccountName);
-
                 button.innerHTML = '<i class="fas fa-check"></i> PDF Downloaded!';
                 setTimeout(() => {
                     button.innerHTML = '<i class="fas fa-download"></i> Download Quote PDF';
@@ -928,7 +826,6 @@
                 button.disabled = false;
             }
         }
-
         function addUserMessage(text) {
             const msg = document.createElement('div');
             msg.className = 'chat-message user';
@@ -940,12 +837,13 @@
             chatBox.appendChild(msg);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
         function addBotMessage(text, requestId, quoteData = null) {
             const msg = document.createElement('div');
             msg.className = 'chat-message bot';
             let contentHtml;
-            if (quoteData) {
+            
+            // Prioritize quoteData if available
+            if (quoteData && Object.keys(quoteData).length > 0) {
                 console.log('Backend quote_data:', JSON.stringify(quoteData));
                 contentHtml = createQuoteContent(quoteData);
             } else {
@@ -965,7 +863,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
             showQuickReplies(false);
         }
-
         function showTyping() {
             const typing = document.createElement('div');
             typing.className = 'typing-indicator';
@@ -974,38 +871,31 @@
             chatBox.appendChild(typing);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
         function hideTyping() {
             const typing = document.getElementById('typing');
             if (typing) typing.remove();
         }
-
         function formatMessage(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
                        .replace(/`(.*?)`/g, '<code>$1</code>')
                        .replace(/\n/g, '<br>');
         }
-
         function showQuickReplies(show) {
             quickReplies.style.display = show ? 'flex' : 'none';
         }
-
         function quickReply(text) {
             chatInput.value = text;
             sendMessage();
         }
-
         async function sendMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
-
             addUserMessage(message);
             history.push({ role: 'user', content: message });
             chatInput.value = '';
             sendBtn.disabled = true;
             showTyping();
-
             try {
                 const response = await fetch('/chat', {
                     method: 'POST',
@@ -1017,44 +907,51 @@
                     })
                 });
                 const data = await response.json();
-
                 if (data.error) {
                     alert(`Error: ${data.error}`);
                     hideTyping();
                     sendBtn.disabled = false;
                     return;
                 }
-
                 console.log('Backend response:', JSON.stringify(data));
                 conversationId = data.conversation_id;
 
-                // Fix calculation errors in quote_data
-                if (data.quote_data && !data.quote_data.isMaxDiscount) {
-                    const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
-                    const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
-                    const discountedTotal = regularTotal * discountFactor;
-                    data.quote_data.RegularTotal = regularTotal;
-                    data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
-                }
-
-                if (data.quote_data && data.quote_data.isMaxDiscount) {
-                    const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
-                    const normalizedQuote = {
-                        AccountName: data.quote_data.AccountName || 'N/A',
-                        ProductName: data.quote_data.ProductName || 'N/A',
-                        Quantity: data.quote_data.Quantity || 0,
-                        PartnerDiscount: parseFloat(data.quote_data['Max_Discount(%)'] || '0'),
-                        generated_on: data.quote_data.generated_on || new Date().toISOString().split('T')[0],
-                        valid_until: data.quote_data.Offer_Valid_Till || 'N/A',
-                        AccountId: data.quote_data.AccountId || 'N/A',
-                        customer_type: data.quote_data.customer_type || 'N/A',
-                        selected_pricebook: data.quote_data.selected_pricebook || 'Standard Pricebook',
-                        UnitPrice: data.quote_data.UnitPrice || 0,
-                        RegularTotal: data.quote_data.RegularTotal || 0,
-                        DiscountedTotal: data.quote_data.DiscountedTotal || 0
-                    };
-                    maxDiscountQuotes.push(normalizedQuote);
-                    localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
+                // Process quote_data
+                if (data.quote_data) {
+                    // Detect max discount query by checking for Max_Discount(%) key
+                    if (data.quote_data['Max_Discount(%)']) {
+                        data.quote_data.isMaxDiscount = true; // Add isMaxDiscount flag
+                        // Normalize Max_Discount(%) to remove trailing '.0' if present
+                        data.quote_data['Max_Discount(%)'] = parseFloat(data.quote_data['Max_Discount(%)']).toFixed(0) + '%';
+                    } else {
+                        // Fix calculations for non-max discount quotes
+                        const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
+                        const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
+                        const discountedTotal = regularTotal * discountFactor;
+                        data.quote_data.RegularTotal = regularTotal;
+                        data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
+                        data.quote_data.isMaxDiscount = false; // Ensure flag is set
+                    }
+                    // Store max discount quotes
+                    if (data.quote_data.isMaxDiscount) {
+                        const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
+                        const normalizedQuote = {
+                            AccountName: data.quote_data.AccountName || 'N/A',
+                            ProductName: data.quote_data.ProductName || 'N/A',
+                            Quantity: data.quote_data.Quantity || 0,
+                            PartnerDiscount: parseFloat(data.quote_data['Max_Discount(%)'] || '0'),
+                            generated_on: data.quote_data.generated_on || new Date().toISOString().split('T')[0],
+                            valid_until: data.quote_data.Offer_Valid_Till || 'N/A',
+                            AccountId: data.quote_data.AccountId || 'N/A',
+                            customer_type: data.quote_data.customer_type || 'N/A',
+                            selected_pricebook: data.quote_data.selected_pricebook || 'Standard Pricebook',
+                            UnitPrice: data.quote_data.UnitPrice || 0,
+                            RegularTotal: data.quote_data.RegularTotal || 0,
+                            DiscountedTotal: data.quote_data.DiscountedTotal || 0
+                        };
+                        maxDiscountQuotes.push(normalizedQuote);
+                        localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
+                    }
                 }
 
                 addBotMessage(data.response, data.request_id, data.quote_data);
@@ -1069,7 +966,6 @@
                 sendBtn.disabled = false;
             }
         }
-
         async function sendFeedback(requestId, rating) {
             if (!requestId) return alert('No request ID for feedback');
             try {
@@ -1085,7 +981,6 @@
                 console.error(error);
             }
         }
-
         // Initialize chat
         async function initializeChat() {
             conversationId = 'convo-' + Date.now();
@@ -1095,7 +990,6 @@
             await fetchQuickReplies();
             showQuickReplies(true);
         }
-
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             initializeChat();
@@ -1104,7 +998,6 @@
                 alert('PDF generation library failed to load. Please check your internet connection and try again.');
             }
         });
-
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
