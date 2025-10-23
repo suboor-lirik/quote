@@ -949,13 +949,13 @@
                     contentHtml = createQuoteContent(quoteData);
                 } catch (error) {
                     console.error('Error processing quoteData:', error);
-                    contentHtml = '<p>Error: Unable to process quote data. Please try again.</p>';
+                    contentHtml = '<p>Error: Unable to process quote data. Please try again or contact support.</p>';
                 }
             } else if (text) {
                 console.log('Backend response (no quote_data):', text);
                 contentHtml = formatMessage(text);
             } else {
-                contentHtml = '<p>Error: Unable to retrieve a valid response. Please try again or contact support.</p>';
+                contentHtml = '<p>Error: Unable to retrieve a valid response. Please verify your input or contact support.</p>';
             }
             
             msg.innerHTML = `
@@ -1043,7 +1043,7 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(`Backend error: ${errorData.message || 'Unknown error'}`);
+                    throw new Error(errorData.message || 'Unknown server error');
                 }
 
                 const data = await response.json();
@@ -1064,12 +1064,12 @@
                     }
                 }
 
-                // Fallback to parsing content.text for max discount if quote_data is invalid or missing
+                // Fallback to parsing content.text for max discount
                 if (!quoteData && message.toLowerCase().includes('max discount') && responseText) {
                     quoteData = parseMaxDiscountText(responseText);
                 }
 
-                // Fix calculation errors in quote_data for non-max discount
+                // Fix calculation errors for non-max discount
                 if (quoteData && !quoteData.isMaxDiscount) {
                     const regularTotal = quoteData.Quantity * quoteData.UnitPrice;
                     const discountFactor = 1 - (quoteData.PartnerDiscount / 100);
@@ -1099,9 +1099,9 @@
                     localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
                 }
 
-                // Handle case where neither quoteData nor responseText is valid
+                // Handle case where response is invalid
                 if (!quoteData && !responseText) {
-                    responseText = 'Error: Unable to retrieve a valid response from the server. Please check your input and try again.';
+                    responseText = 'Error: Unable to retrieve a valid response from the server. The account or product details may not exist. Please verify and try again.';
                 }
 
                 addBotMessage(responseText, data.request_id || data.id, quoteData);
@@ -1111,7 +1111,10 @@
                 chatInput.focus();
             } catch (error) {
                 console.error('Error in sendMessage:', error);
-                const errorMessage = `Error: Failed to get response from server. ${error.message.includes('Columns referenced') ? 'The account or product details may not exist in the system. Please verify and try again.' : error.message}`;
+                let errorMessage = 'Error: Failed to get response from server. Please verify your input (account name, product, or quantity) and try again.';
+                if (error.message.includes('Columns referenced')) {
+                    errorMessage = 'Error: The account or product details are not found in the system. Please check the account name (e.g., Jackson-Johnson) or product (e.g., FastTrack SSD Enclosure) and try again.';
+                }
                 addBotMessage(errorMessage, null);
                 hideTyping();
                 sendBtn.disabled = false;
