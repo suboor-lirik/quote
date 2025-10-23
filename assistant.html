@@ -178,11 +178,13 @@
         }
 
         .chat-main-section {
-            padding: 40px 15px;
-            max-width: 900px;
-            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            min-height: calc(100vh - 60px);
             position: relative;
             z-index: 10;
+            display: flex;
+            flex-direction: column;
         }
 
         .chat-container {
@@ -191,13 +193,15 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 16px rgba(31, 38, 135, 0.3);
             border-radius: 15px;
-            padding: 30px;
+            padding: 20px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
-            height: 70vh;
+            height: calc(100vh - 120px);
             display: flex;
             flex-direction: column;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .chat-container:hover {
@@ -563,19 +567,6 @@
             50% { transform: translateY(-5px); }
         }
 
-        footer {
-            padding: 30px 15px;
-            background: var(--bg-dark);
-            text-align: center;
-            color: var(--text-light);
-            margin-top: 40px;
-        }
-
-        footer p {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
         @keyframes glow {
             from { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent); }
             to { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary); }
@@ -590,7 +581,7 @@
             .hero-section { height: 30vh; }
             .hero-content h1 { font-size: 2.2rem; }
             .hero-content p { font-size: 1.1rem; }
-            .chat-container { padding: 15px; height: 60vh; }
+            .chat-container { padding: 15px; height: calc(100vh - 100px); }
             .chat-header { font-size: 1.6rem; }
             .quick-replies { flex-direction: column; align-items: center; }
             .chat-input-container { flex-wrap: wrap; justify-content: center; }
@@ -642,10 +633,6 @@
             </div>
         </div>
     </section>
-
-    <footer>
-        <p>© 2025 Quote Generator. All rights reserved. Powered by Advanced AI for Business Excellence.</p>
-    </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
