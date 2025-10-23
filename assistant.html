@@ -715,22 +715,28 @@
         function createQuoteContent(quoteData) {
             let content;
             if (quoteData.isMaxDiscount) {
+                // Dynamic max discount output
+                const accountName = quoteData.AccountName || 'N/A';
+                const productName = quoteData.ProductName || 'N/A';
+                const quantity = quoteData.Quantity || 'N/A';
+                const maxDiscount = quoteData['Max_Discount(%)'] || 'N/A';
+                const validTill = quoteData.Offer_Valid_Till || 'N/A';
                 content = `
-                    Based on the provided inputs, the Account Name: ${quoteData.AccountName} has been evaluated for the Product Name: ${quoteData.ProductName}.<br>
-                    The quote includes a Quantity: ${quoteData.Quantity} Units, with a Maximum Discount (%): ${quoteData['Max_Discount(%)']} applicable on this product.<br>
-                    The special offer remains valid until Offer Valid Till: ${quoteData.Offer_Valid_Till}, after which the discount terms may be revised.
+                    Based on the provided inputs, the Account Name: ${accountName} has been evaluated for the Product Name: ${productName}.<br>
+                    The quote includes a Quantity: ${quantity} Units, with a Maximum Discount (%): ${maxDiscount} applicable on this product.<br>
+                    The special offer remains valid until Offer Valid Till: ${validTill}, after which the discount terms may be revised.
                 `;
                 return `<div class="quote-container"><div class="quote-text">${formatMessage(content)}</div></div>`;
             } else {
                 content = `
-                    Based on the provided inputs, the quote for Account Name: ${quoteData.AccountName}, which is a ${quoteData.customer_type}, has been created under the Selected Pricebook: ${quoteData.selected_pricebook}.<br>
-                    The Product Name: ${quoteData.ProductName} has been quoted for Quantity: ${quoteData.Quantity} Units at a Unit Price: ${formatCurrency(quoteData.UnitPrice)}, with a Partner Discount: ${quoteData.PartnerDiscount}% applied.<br>
-                    After applying the discount, the Regular Total: ${formatCurrency(quoteData.RegularTotal)} has been reduced to a Discounted Total: ${formatCurrency(quoteData.DiscountedTotal)}.
+                    Based on the provided inputs, the quote for Account Name: ${quoteData.AccountName || 'N/A'}, which is a ${quoteData.customer_type || 'N/A'}, has been created under the Selected Pricebook: ${quoteData.selected_pricebook || 'N/A'}.<br>
+                    The Product Name: ${quoteData.ProductName || 'N/A'} has been quoted for Quantity: ${quoteData.Quantity || 'N/A'} Units at a Unit Price: ${quoteData.UnitPrice ? formatCurrency(quoteData.UnitPrice) : 'N/A'}, with a Partner Discount: ${quoteData.PartnerDiscount || 'N/A'}% applied.<br>
+                    After applying the discount, the Regular Total: ${quoteData.RegularTotal ? formatCurrency(quoteData.RegularTotal) : 'N/A'} has been reduced to a Discounted Total: ${formatCurrency(quoteData.DiscountedTotal) || 'N/A'}.
                 `;
                 return `
                     <div class="quote-container">
                         <div class="quote-text">${formatMessage(content)}</div>
-                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId}', '${quoteData.AccountName}', '${quoteData.customer_type}', '${quoteData.selected_pricebook}', '${quoteData.ProductName}', ${quoteData.Quantity}, ${quoteData.UnitPrice}, ${quoteData.PartnerDiscount}, ${quoteData.RegularTotal}, ${quoteData.DiscountedTotal}, '${quoteData.generated_on}')">
+                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId || 'N/A'}', '${quoteData.AccountName || 'N/A'}', '${quoteData.customer_type || 'N/A'}', '${quoteData.selected_pricebook || 'N/A'}', '${quoteData.ProductName || 'N/A'}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${quoteData.PartnerDiscount || 0}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || 'N/A'}')">
                             <i class="fas fa-download"></i> Download Quote PDF
                         </button>
                     </div>
@@ -963,12 +969,12 @@
                     const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
                     // Normalize data for dashboard
                     const normalizedQuote = {
-                        AccountName: data.quote_data.AccountName,
-                        ProductName: data.quote_data.ProductName,
-                        Quantity: data.quote_data.Quantity,
-                        PartnerDiscount: parseFloat(data.quote_data['Max_Discount(%)']),
-                        generated_on: data.quote_data.generated_on,
-                        valid_until: data.quote_data.Offer_Valid_Till,
+                        AccountName: data.quote_data.AccountName || 'N/A',
+                        ProductName: data.quote_data.ProductName || 'N/A',
+                        Quantity: data.quote_data.Quantity || 0,
+                        PartnerDiscount: parseFloat(data.quote_data['Max_Discount(%)'] || '0'),
+                        generated_on: data.quote_data.generated_on || 'N/A',
+                        valid_until: data.quote_data.Offer_Valid_Till || 'N/A',
                         // Include fields for dashboard quotes table
                         AccountId: data.quote_data.AccountId || 'N/A',
                         customer_type: data.quote_data.customer_type || 'N/A',
