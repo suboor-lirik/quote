@@ -93,7 +93,7 @@
 
         .nav-links a::before {
             content: '';
-            position: absolute;
+            spelers: absolute;
             top: 50%;
             left: 50%;
             width: 0;
@@ -1057,7 +1057,8 @@
                     localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
                 }
 
-                addBotMessage(data.response, data.request_id, data.quote_data);
+                // Always use createQuoteContent if quoteData is present
+                addBotMessage(null, data.request_id, data.quote_data);
                 history.push({ role: 'assistant', content: data.response });
                 hideTyping();
                 sendBtn.disabled = false;
