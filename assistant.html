@@ -753,18 +753,25 @@
         function createQuoteContent(quoteData) {
             console.log('createQuoteContent input:', JSON.stringify(quoteData));
             let content;
+
             if (quoteData.isMaxDiscount) {
                 const accountName = quoteData.AccountName || 'N/A';
                 const productName = quoteData.ProductName || 'N/A';
                 const quantity = quoteData.Quantity || 'N/A';
                 const maxDiscount = quoteData['Max_Discount(%)'] || 'N/A';
                 const validTill = quoteData.Offer_Valid_Till || 'N/A';
+
                 content = `
-                    Based on the provided inputs, the Account Name: ${accountName} has been evaluated for the Product Name: ${productName}.<br>
-                    The quote includes a Quantity: ${quantity} Units, with a Maximum Discount (%): ${maxDiscount} applicable on this product.<br>
-                    The special offer remains valid until Offer Valid Till: ${validTill}, after which the discount terms may be revised.
+                    <p><strong>Based on the above inputs, the maximum discount has been calculated as:</strong></p>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li><strong>Account Name:</strong> ${accountName}</li>
+                        <li><strong>Product Name:</strong> ${productName}</li>
+                        <li><strong>Quantity:</strong> ${quantity} Units</li>
+                        <li><strong>Maximum Discount (%):</strong> ${maxDiscount}</li>
+                        <li><strong>Offer Valid Till:</strong> ${validTill}</li>
+                    </ul>
                 `;
-                return `<div class="quote-container"><div class="quote-text">${formatMessage(content)}</div></div>`;
+                return `<div class="quote-container"><div class="quote-text">${content}</div></div>`;
             } else {
                 const accountName = quoteData.AccountName || 'N/A';
                 const customerType = quoteData.customer_type || 'N/A';
@@ -775,14 +782,24 @@
                 const partnerDiscount = quoteData.PartnerDiscount || '0';
                 const regularTotal = quoteData.RegularTotal ? formatCurrency(quoteData.RegularTotal) : 'N/A';
                 const discountedTotal = quoteData.DiscountedTotal ? formatCurrency(quoteData.DiscountedTotal) : 'N/A';
+
                 content = `
-                    Based on the provided inputs, the quote for Account Name: ${accountName}, which is a ${customerType}, has been created under the Selected Pricebook: ${pricebook}.<br>
-                    The Product Name: ${productName} has been quoted for Quantity: ${quantity} Units at a Unit Price: ${unitPrice}, with a Partner Discount: ${partnerDiscount}% applied.<br>
-                    After applying the discount, the Regular Total: ${regularTotal} has been reduced to a Discounted Total: ${discountedTotal}.
+                    <p><strong>Based on the above inputs, the quote has been generated as:</strong></p>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li><strong>Account Name:</strong> ${accountName}</li>
+                        <li><strong>Customer Type:</strong> ${customerType}</li>
+                        <li><strong>Selected Pricebook:</strong> ${pricebook}</li>
+                        <li><strong>Product Name:</strong> ${productName}</li>
+                        <li><strong>Quantity:</strong> ${quantity} Units</li>
+                        <li><strong>Unit Price:</strong> ${unitPrice}</li>
+                        <li><strong>Partner Discount:</strong> ${partnerDiscount}%</li>
+                        <li><strong>Regular Total:</strong> ${regularTotal}</li>
+                        <li><strong>Discounted Total:</strong> ${discountedTotal}</li>
+                    </ul>
                 `;
                 return `
                     <div class="quote-container">
-                        <div class="quote-text">${formatMessage(content)}</div>
+                        <div class="quote-text">${content}</div>
                         <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId || 'N/A'}', '${accountName}', '${customerType}', '${pricebook}', '${productName}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${partnerDiscount}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || new Date().toISOString().split('T')[0]}')">
                             <i class="fas fa-download"></i> Download Quote PDF
                         </button>
