@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cybersecurity Experts - ThreatAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #1C2526, #1C2526); /* Matte Black */
+      font-family: Arial, Helvetica, sans-serif;
+      color: #E8ECEF; /* Dark White */
+    }
+    video#bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.7) contrast(1.2);
+      animation: scanline 10s infinite;
+    }
+    @keyframes scanline {
+      0%, 100% { filter: brightness(0.7) contrast(1.2); }
+      50% { filter: brightness(0.8) contrast(1.3); }
+    }
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(45deg, rgba(28, 37, 38, 0.3), rgba(28, 37, 38, 0.3)); /* Matte Black */
+      z-index: -1;
+      opacity: 0.4;
+      animation: overlayPulse 8s infinite;
+    }
+    @keyframes overlayPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.6; }
+    }
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 6rem 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .hero-text {
+      background: rgba(28, 37, 38, 0.8); /* Matte Black */
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.3); /* Orange */
+      border: 1px solid rgba(242, 140, 56, 0.5); /* Orange */
+      text-shadow: 0 0 10px #F28C38; /* Orange */
+      animation: neonPulse 2s infinite alternate;
+    }
+    @keyframes neonPulse {
+      0% { box-shadow: 0 0 15px rgba(242, 140, 56, 0.6), 0 0 25px rgba(232, 236, 239, 0.5); } /* Orange, Dark White */
+      100% { box-shadow: 0 0 25px rgba(242, 140, 56, 0.8), 0 0 35px rgba(232, 236, 239, 0.7); } /* Orange, Dark White */
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+      font-weight: 700;
+      color: #E8ECEF; /* Dark White */
+      text-shadow: 0 0 10px rgba(232, 236, 239, 0.5); /* Dark White */
+    }
+    .nav-link.active {
+      color: #F28C38; /* Orange */
+      text-shadow: 0 0 15px #F28C38; /* Orange */
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: #F28C38; /* Orange */
+      box-shadow: 0 0 10px #F28C38; /* Orange */
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-link:hover {
+      color: #F28C38; /* Orange */
+      text-shadow: 0 0 15px #F28C38; /* Orange */
+    }
+    .expert-card {
+      background: rgba(28, 37, 38, 0.9); /* Matte Black */
+      border: 2px solid #F28C38; /* Orange */
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1rem;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.3); /* Orange */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: holoShimmer 3s infinite;
+    }
+    .expert-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(242, 140, 56, 0.5); /* Orange */
+    }
+    @keyframes holoShimmer {
+      0% { box-shadow: 0 0 20px rgba(242, 140, 56, 0.5), 0 0 30px rgba(232, 236, 239, 0.3); } /* Orange, Dark White */
+      50% { box-shadow: 0 0 30px rgba(242, 140, 56, 0.7), 0 0 40px rgba(232, 236, 239, 0.5); } /* Orange, Dark White */
+      100% { box-shadow: 0 0 20px rgba(242, 140, 56, 0.5), 0 0 30px rgba(232, 236, 239, 0.3); } /* Orange, Dark White */
+    }
+    .expert-img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 2px solid #F28C38; /* Orange */
+      box-shadow: 0 0 10px rgba(242, 140, 56, 0.5); /* Orange */
+    }
+    .chat-button {
+      background: linear-gradient(45deg, #F28C38, #E8ECEF); /* Orange to Dark White */
+      color: #1C2526; /* Matte Black */
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .chat-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.5); /* Orange */
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(28, 37, 38, 0.8); /* Matte Black */
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: rgba(28, 37, 38, 0.95); /* Matte Black */
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #E8ECEF; /* Dark White */
+      position: relative;
+      border: 2px solid #F28C38; /* Orange */
+      box-shadow: 0 0 30px rgba(242, 140, 56, 0.5), 0 0 50px rgba(232, 236, 239, 0.3); /* Orange, Dark White */
+      animation: holoShimmer 3s infinite;
+    }
+    .close-button {
+      cursor: pointer;
+      color: #F28C38; /* Orange */
+      font-size: 1.5rem;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      transition: color 0.3s ease;
+    }
+    .close-button:hover {
+      color: #E8ECEF; /* Dark White */
+    }
+    .chat-box {
+      background: rgba(28, 37, 38, 0.7); /* Matte Black */
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .chat-message {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 4px;
+      color: #E8ECEF; /* Dark White */
+    }
+    .user-message {
+      background: rgba(242, 140, 56, 0.1); /* Orange */
+      text-align: right;
+      border-radius: 1.5rem 1.5rem 0 1.5rem;
+    }
+    .bot-message {
+      background: rgba(232, 236, 239, 0.1); /* Dark White */
+      border-radius: 1.5rem 1.5rem 1.5rem 0;
+    }
+    .chat-input {
+      background: #1C2526; /* Matte Black */
+      border: 1px solid #F28C38; /* Orange */
+      color: #E8ECEF; /* Dark White */
+      padding: 0.5rem;
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .send-button {
+      background: linear-gradient(45deg, #F28C38, #E8ECEF); /* Orange to Dark White */
+      color: #1C2526; /* Matte Black */
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .send-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.5); /* Orange */
+    }
+    .particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #F28C38; /* Orange */
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: float 12s infinite;
+      z-index: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0.8; }
+      50% { opacity: 0.4; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+    .appointment-section {
+      position: relative;
+      z-index: 1;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .appointment-card {
+      background: rgba(28, 37, 38, 0.8); /* Matte Black */
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem;
+      max-width: 600px;
+      text-align: left;
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.3); /* Orange */
+      border: 1px solid rgba(242, 140, 56, 0.5); /* Orange */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: neonPulse 2s infinite alternate;
+    }
+    .appointment-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 25px rgba(242, 140, 56, 0.5); /* Orange */
+    }
+    .appointment-card h2 {
+      color: #F28C38; /* Orange */
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(242, 140, 56, 0.6); /* Orange */
+    }
+    .appointment-input {
+      color: #E8ECEF; /* Dark White */
+      font-size: 1rem;
+      width: 100%;
+      background: #1C2526; /* Matte Black */
+      border-radius: 8px;
+      padding: 0.5rem;
+      z-index: 15;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      pointer-events: auto;
+      border: 1px solid rgba(242, 140, 56, 0.3); /* Orange */
+    }
+    .appointment-input:focus {
+      box-shadow: 0 0 10px rgba(242, 140, 56, 0.5); /* Orange */
+      transform: scale(1.02);
+      outline: none;
+    }
+    .submit-button {
+      background: linear-gradient(45deg, #F28C38, #E8ECEF); /* Orange to Dark White */
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 900;
+      color: #1C2526; /* Matte Black */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.6); /* Orange */
+      z-index: 15;
+      pointer-events: auto;
+      animation: pulse 2s infinite;
+    }
+    .submit-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(242, 140, 56, 1); /* Orange */
+    }
+    .submit-button:active {
+      transform: scale(0.95);
+    }
+    .delete-button {
+      background: linear-gradient(45deg, #F28C38, #E8ECEF); /* Orange to Dark White */
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 700;
+      color: #1C2526; /* Matte Black */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.6); /* Orange */
+      z-index: 15;
+      pointer-events: auto;
+      animation: pulse 2s infinite;
+    }
+    .delete-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(242, 140, 56, 1); /* Orange */
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(242, 140, 56, 0.6); }
+      50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(242, 140, 56, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 15px rgba(242, 140, 56, 0.6); }
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(28, 37, 38, 0.9); /* Matte Black */
+      color: #E8ECEF; /* Dark White */
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(242, 140, 56, 0.5); /* Orange */
+      z-index: 20;
+      display: none;
+      max-width: 90%;
+    }
+    .toast.success {
+      border: 2px solid #F28C38; /* Orange */
+    }
+    .toast.error {
+      border: 2px solid #FF3333;
+    }
+    .flatpickr-calendar {
+      z-index: 20 !important;
+      background: rgba(28, 37, 38, 0.95); /* Matte Black */
+      color: #E8ECEF; /* Dark White */
+      border: 2px solid #F28C38; /* Orange */
+      box-shadow: 0 0 20px rgba(242, 140, 56, 0.5); /* Orange */
+    }
+    .flatpickr-day {
+      color: #E8ECEF; /* Dark White */
+    }
+    .flatpickr-day:hover {
+      background: #F28C38; /* Orange */
+      color: #E8ECEF; /* Dark White */
+    }
+    .flatpickr-day.selected {
+      background: #F28C38; /* Orange */
+      border-color: #F28C38; /* Orange */
+      color: #E8ECEF; /* Dark White */
+    }
+  </style>
+</head>
+<body>
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="https://v.ftcdn.net/16/31/58/24/700_F_1631582477_zrhkh29h8i2oPZcYrnkkmTGMrQ0L1iwa_ST.mp4" type="video/mp4">
+    <img src="/images/fallback-network-intrusion.jpg" alt="Fallback Network Intrusion Image">
+  </video>
+  <div class="video-overlay"></div>
+  <div id="particles" class="absolute inset-0 z-0"></div>
+
+  <header class="fixed top-0 left-0 w-full bg-[#1C2526] bg-opacity-90 z-20 py-4 px-6 flex items-center justify-between"> <!-- Matte Black -->
+    <div class="flex items-center">
+      <div class="flex flex-col items-start">
+        <h1 class="text-lg font-bold text-[#E8ECEF] text-shadow: 0 0 10px rgba(232, 236, 239, 0.5);">ThreatAI</h1> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF]" id="header-tagline"> <!-- Dark White -->
+          <span data-lang="en">Network Intrusion Detection with AI</span>
+          <span data-lang="kn" class="hidden">ಎಐ ಜೊತೆಗಿನ ಜಾಲ ಒಳನುಗ್ಗುವಿಕೆ ಪತ್ತೆ</span>
+          <span data-lang="ur" class="hidden">AI کے ساتھ نیٹ ورک انٹروژن ڈیٹیکشن</span>
+          <span data-lang="hi" class="hidden">AI के साथ नेटवर्क घुसपैठ का पता लगाना</span>
+        </p>
+      </div>
+    </div>
+    <nav class="flex space-x-4">
+      <a href="/" class="nav-link" aria-label="Home">
+        <span data-lang="en">Home</span>
+        <span data-lang="kn" class="hidden">ಮುಖಪುಟ</span>
+        <span data-lang="ur" class="hidden">ہوم</span>
+        <span data-lang="hi" class="hidden">होम</span>
+      </a>
+
+      <a href="/ml-detection" class="nav-link" aria-label="ML Detection">
+        <span data-lang="en">ML Detection</span>
+        <span data-lang="kn" class="hidden">ಎಂಎಲ್ ಪತ್ತೆ</span>
+        <span data-lang="ur" class="hidden">ایم ایل ڈیٹیکشن</span>
+        <span data-lang="hi" class="hidden">एमएल डिटेक्शन</span>
+      </a>
+      <a href="/dashboard" class="nav-link" aria-label="Dashboard">
+        <span data-lang="en">Dashboard</span>
+        <span data-lang="kn" class="hidden">ಡ್ಯಾಶ್‌ಬೋರ್ಡ್</span>
+        <span data-lang="ur" class="hidden">ڈیش بورڈ</span>
+        <span data-lang="hi" class="hidden">डैशबोर्ड</span>
+      </a>
+      <a href="/learning-center" class="nav-link" aria-label="Learning Center">
+        <span data-lang="en">Learning Center</span>
+        <span data-lang="kn" class="hidden">ಕಲಿಕೆ ಕೇಂದ್ರ</span>
+        <span data-lang="ur" class="hidden">لرننگ سینٹر</span>
+        <span data-lang="hi" class="hidden">लर्निंग सेंटर</span>
+      </a>
+      <a href="/experts" class="nav-link active" aria-label="Experts">
+        <span data-lang="en">Experts</span>
+        <span data-lang="kn" class="hidden">ತಜ್ಞರು</span>
+        <span data-lang="ur" class="hidden">ماہرین</span>
+        <span data-lang="hi" class="hidden">विशेषज्ञ</span>
+      </a>
+      <a href="/about" class="nav-link" aria-label="About">
+        <span data-lang="en">About</span>
+        <span data-lang="kn" class="hidden">ಬಗ್ಗೆ</span>
+        <span data-lang="ur" class="hidden">کے بارے میں</span>
+        <span data-lang="hi" class="hidden">के बारे में</span>
+      </a>
+    </nav>
+    <div class="language-toggle">
+      <span data-lang="en" class="active" aria-label="English">EN</span> |
+      <span data-lang="kn" aria-label="Kannada">ಕ</span> |
+      <span data-lang="ur" aria-label="Urdu">اردو</span> |
+      <span data-lang="hi" aria-label="Hindi">हि</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-[#F28C38] hero-text"> <!-- Orange -->
+      <span data-lang="en">Meet Our Cybersecurity Experts</span>
+      <span data-lang="kn" class="hidden">ನಮ್ಮ ಸೈಬರ್‌ಸೆಕ್ಯುರಿಟಿ ತಜ್ಞರನ್ನು ಭೇಟಿಯಾಗಿ</span>
+      <span data-lang="ur" class="hidden">ہمارے سائبر سیکیورٹی ماہرین سے ملیں</span>
+      <span data-lang="hi" class="hidden">हमारे साइबरसुरक्षा विशेषज्ञों से मिलें</span>
+    </h1>
+    <p class="text-md md:text-xl mb-6 max-w-3xl mx-auto text-[#E8ECEF] hero-text"> <!-- Dark White -->
+      <span data-lang="en">Connect with top cybersecurity specialists for expert consultations on network security.</span>
+      <span data-lang="kn" class="hidden">ಜಾಲ ಸುರಕ್ಷತೆಯ ಕುರಿತು ತಜ್ಞರ ಸಲಹೆಗಾಗಿ ಉನ್ನತ ಸೈಬರ್‌ಸೆಕ್ಯುರಿಟಿ ತಜ್ಞರೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಿ.</span>
+      <span data-lang="ur" class="hidden">نیٹ ورک سیکیورٹی پر ماہرانہ مشاورت کے لیے بہترین سائبر سیکیورٹی ماہرین سے رابطہ کریں۔</span>
+      <span data-lang="hi" class="hidden">नेटवर्क सुरक्षा पर विशेषज्ञ परामर्श के लिए शीर्ष साइबरसुरक्षा विशेषज्ञों से संपर्क करें।</span>
+    </p>
+
+    <div class="flex flex-wrap justify-center">
+      <div class="expert-card">
+        <img src="https://img.freepik.com/free-photo/portrait-business-woman-working-laptop_1303-9727.jpg?semt=ais_incoming&w=740&q=80" alt="Pearl Rani" class="expert-img">
+        <h2 class="text-lg font-bold text-[#F28C38] mb-1">Supreetha</h2> <!-- Orange -->
+        <p class="text-sm text-[#E8ECEF]">Cybersecurity Analyst</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF]">supsoralli@gmail.com</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF] mt-2">Available</p> <!-- Dark White -->
+        <button class="chat-button" onclick="openChatModal('Supreetha', 'supsoralli@gmail.com')">
+          <span data-lang="en">Chat with Expert</span>
+          <span data-lang="kn" class="hidden">ತಜ್ಞರೊಂದಿಗೆ ಚಾಟ್ ಮಾಡಿ</span>
+          <span data-lang="ur" class="hidden">ماہر کے ساتھ چیٹ کریں</span>
+          <span data-lang="hi" class="hidden">विशेषज्ञ के साथ चैट करें</span>
+        </button>
+      </div>
+      <div class="expert-card">
+        <img src="https://media.gettyimages.com/id/898581556/photo/entrepreneur-or-executive-working-at-office.jpg?s=612x612&w=gi&k=20&c=vFGJVjqO5Fw0XfG1pPWW-JDJOJKLFcgjep0ONR8eOu8=" alt="Rutuja" class="expert-img">
+        <h2 class="text-lg font-bold text-[#F28C38] mb-1">Rutuja</h2> <!-- Orange -->
+        <p class="text-sm text-[#E8ECEF]">Network Security Specialist</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF]">supreeta823@gmail.com</p> <!-- Dark White -->
+        <p class="text-sm text-[#F28C38] mt-2">Busy</p> <!-- Orange -->
+        <button class="chat-button" onclick="openChatModal('Rutuja', 'supreeta823@gmail.com')">
+          <span data-lang="en">Chat with Expert</span>
+          <span data-lang="kn" class="hidden">ತಜ್ಞರೊಂದಿಗೆ ಚಾಟ್ ಮಾಡಿ</span>
+          <span data-lang="ur" class="hidden">ماہر کے ساتھ چیٹ کریں</span>
+          <span data-lang="hi" class="hidden">विशेषज्ञ के साथ चैट करें</span>
+        </button>
+      </div>
+      <div class="expert-card">
+        <img src="https://www.shutterstock.com/image-photo/young-happy-latin-business-woman-260nw-2255366049.jpg" alt="Sakshi Jadav" class="expert-img">
+        <h2 class="text-lg font-bold text-[#F28C38] mb-1">Pallavi</h2> <!-- Orange -->
+        <p class="text-sm text-[#E8ECEF]">Threat Intelligence Expert</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF]">rathodpallavi740@gmail.com</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF] mt-2">Available</p> <!-- Dark White -->
+        <button class="chat-button" onclick="openChatModal('Pallavi', 'rathodpallavi740@gmail.com')">
+          <span data-lang="en">Chat with Expert</span>
+          <span data-lang="kn" class="hidden">ತಜ್ಞರೊಂದಿಗೆ ಚಾಟ್ ಮಾಡಿ</span>
+          <span data-lang="ur" class="hidden">ماہر کے ساتھ چیٹ کریں</span>
+          <span data-lang="hi" class="hidden">विशेषज्ञ के साथ चैट करें</span>
+        </button>
+      </div>
+      <div class="expert-card">
+        <img src="https://www.shutterstock.com/shutterstock/photos/1837034656/display_1500/stock-photo-photo-of-pretty-young-girl-sit-desktop-pc-hold-pen-write-notepad-wear-glasses-shirt-in-home-office-1837034656.jpg" alt="Nikita" class="expert-img">
+        <h2 class="text-lg font-bold text-[#F28C38] mb-1">Nikita</h2> <!-- Orange -->
+        <p class="text-sm text-[#E8ECEF]">Penetration Testing Specialist</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF]">halenikitha559@gmail.com</p> <!-- Dark White -->
+        <p class="text-sm text-[#E8ECEF] mt-2">Available</p> <!-- Dark White -->
+        <button class="chat-button" onclick="openChatModal('Nikita', 'halenikitha559@gmail.com')">
+          <span data-lang="en">Chat with Expert</span>
+          <span data-lang="kn" class="hidden">ತಜ್ಞರೊಂದಿಗೆ ಚಾಟ್ ಮಾಡಿ</span>
+          <span data-lang="ur" class="hidden">ماہر کے ساتھ چیٹ کریں</span>
+          <span data-lang="hi" class="hidden">विशेषज्ञ के साथ चैट करें</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="appointment-section">
+    <h2 class="text-2xl font-bold text-[#F28C38] mb-4"> <!-- Orange -->
+      <span data-lang="en">Schedule Consultation</span>
+      <span data-lang="kn" class="hidden">ಸಲಹೆಯನ್ನು ನಿಗದಿಪಡಿಸಿ</span>
+      <span data-lang="ur" class="hidden">مشاورت طے کریں</span>
+      <span data-lang="hi" class="hidden">परामर्श निर्धारित करें</span>
+    </h2>
+    <div class="appointment-card mx-auto">
+      <form id="appointmentForm">
+        <div class="mb-4">
+          <label class="block text-sm text-[#E8ECEF] mb-1"> <!-- Dark White -->
+            <span data-lang="en">Select Expert</span>
+            <span data-lang="kn" class="hidden">ತಜ್ಞರನ್ನು ಆಯ್ಕೆಮಾಡಿ</span>
+            <span data-lang="ur" class="hidden">ماہر منتخب کریں</span>
+            <span data-lang="hi" class="hidden">विशेषज्ञ चुनें</span>
+          </label>
+          <select id="expertSelect" class="appointment-input" required>
+            <option value="Supreeta">Supreeta</option>
+            <option value="Pallavi">Pallavi</option>
+            <option value="Rutuja">Rutuja</option>
+            <option value="Nikita">Nikita</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm text-[#E8ECEF] mb-1"> <!-- Dark White -->
+            <span data-lang="en">Select Date</span>
+            <span data-lang="kn" class="hidden">ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ</span>
+            <span data-lang="ur" class="hidden">تاریخ منتخب کریں</span>
+            <span data-lang="hi" class="hidden">तारीख चुनें</span>
+          </label>
+          <input type="text" id="appointmentDate" class="appointment-input" placeholder="Pick a date" required>
+        </div>
+        <button type="submit" class="submit-button">
+          <span data-lang="en">Schedule</span>
+          <span data-lang="kn" class="hidden">ನಿಗದಿಪಡಿಸಿ</span>
+          <span data-lang="ur" class="hidden">طے کریں</span>
+          <span data-lang="hi" class="hidden">निर्धारित करें</span>
+        </button>
+      </form>
+      <h3 class="text-lg font-bold text-[#F28C38] mt-4 mb-2"> <!-- Orange -->
+        <span data-lang="en">Upcoming Consultations</span>
+        <span data-lang="kn" class="hidden">ಮುಂಬರುವ ಸಲಹೆಗಳು</span>
+        <span data-lang="ur" class="hidden">آنے والی مشاورتیں</span>
+        <span data-lang="hi" class="hidden">आगामी परामर्श</span>
+      </h3>
+      <ul id="appointmentList" class="text-sm text-[#E8ECEF]"></ul> <!-- Dark White -->
+      <div id="toast" class="toast"></div>
+    </div>
+  </section>
+
+  <div id="chatModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeChatModal()">×</span>
+      <h2 class="text-xl font-bold text-[#F28C38] mb-3" id="chatExpertName"></h2> <!-- Orange -->
+      <div class="chat-box" id="messages"></div>
+      <div class="input-form">
+        <input type="text" id="msg" class="chat-input" placeholder="Type your message...">
+        <button id="sendChat" class="send-button" onclick="sendMessage()">Send</button>
+      </div>
+      <p class="text-sm text-[#E8ECEF] mt-4"> <!-- Dark White -->
+        <span data-lang="en">Disclaimer: Consult with an expert before making any decisions.</span>
+        <span data-lang="kn" class="hidden">ಹಕ್ಕುತ್ಯಾಗ: ಯಾವುದೇ ನಿರ್ಧಾರಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳುವ ಮೊದಲು ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.</span>
+        <span data-lang="ur" class="hidden">ڈس کلیمر: کوئی فیصلہ کرنے سے پہلے ماہر سے مشورہ کریں۔</span>
+        <span data-lang="hi" class="hidden">अस्वीकरण: कोई भी निर्णय लेने से पहले विशेषज्ञ से परामर्श करें।</span>
+      </p>
+    </div>
+  </div>
+
+  <footer class="py-6 px-4 bg-[#1C2526] text-center relative z-10"> <!-- Matte Black -->
+    <div class="max-w-6xl mx-auto">
+      <p class="text-md text-[#E8ECEF] mb-4 hero-text"> <!-- Dark White -->
+        <span data-lang="en">Securing Networks with AI</span>
+        <span data-lang="kn" class="hidden">AI ಜೊತೆಗೆ ಜಾಲವನ್ನು ಸುರಕ್ಷಿತಗೊಳಿಸುವುದು</span>
+        <span data-lang="ur" class="hidden">AI کے ساتھ نیٹ ورکس کو محفوظ بنانا</span>
+        <span data-lang="hi" class="hidden">AI के साथ नेटवर्क को सुरक्षित करना</span>
+      </p>
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="#" class="text-[#E8ECEF] hover:text-[#F28C38]" aria-label="WhatsApp">WhatsApp</a> <!-- Dark White to Orange -->
+        <a href="#" class="text-[#E8ECEF] hover:text-[#F28C38]" aria-label="Email">Email</a> <!-- Dark White to Orange -->
+        <a href="#" class="text-[#E8ECEF] hover:text-[#F28C38]" aria-label="Helpline">Helpline</a> <!-- Dark White to Orange -->
+      </div>
+      <div class="flex justify-center">
+        <input type="email" class="p-2 rounded-l-md bg-[#1C2526] text-[#E8ECEF] border-none focus:outline-none" id="newsletter-input" placeholder="Join our newsletter" aria-label="Newsletter Email"> <!-- Matte Black, Dark White -->
+        <button class="p-2 bg-[#F28C38] text-[#1C2526] rounded-r-md hover:bg-[#E8ECEF] hover:shadow-[0_0_15px_rgba(232,236,239,0.7)]" aria-label="Join Newsletter">Join</button> <!-- Orange to Dark White, Matte Black -->
+      </div>
+      <div class="hidden" id="newsletter-placeholder">
+        <span data-lang="en">Join our newsletter</span>
+        <span data-lang="kn">ನಮ್ಮ ಸುದ್ದಿಪತ್ರಕ್ಕೆ ಸೇರಿಕೊಳ್ಳಿ</span>
+        <span data-lang="ur">ہمارے نیوز لیٹر میں شامل ہوں</span>
+        <span data-lang="hi">हमारे न्यूज़लेटर में शामिल हों</span>
+      </div>
+      <p class="mt-4 text-sm text-[#E8ECEF] hero-text">© 2025 ThreatAI</p> <!-- Dark White -->
+    </div>
+  </footer>
+
+  <script>
+    // Particle Animation
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 10; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.animationDelay = `${Math.random() * 12}s`;
+      particleContainer.appendChild(particle);
+    }
+
+    // GSAP Animations
+    gsap.from("header", { y: -100, opacity: 0, duration: 1, ease: "power2.out" });
+    gsap.from(".hero h1", { opacity: 0, y: -50, duration: 1.2, ease: "power2.out", delay: 0.5 });
+    gsap.from(".hero p", { opacity: 0, y: 50, duration: 1.2, ease: "power2.out", delay: 0.7 });
+    gsap.from(".nav-link", { opacity: 0, y: 20, duration: 0.8, stagger: 0.1, delay: 0.9, ease: "power2.out" });
+    gsap.from(".expert-card", { opacity: 0, x: -50, duration: 0.8, stagger: 0.15, delay: 1, ease: "power2.out" });
+    gsap.from(".appointment-card", { opacity: 0, x: -50, duration: 0.8, delay: 1.2, ease: "power2.out" });
+
+    // Language Toggle
+    const languageToggles = document.querySelectorAll('.language-toggle span');
+    const translatableElements = document.querySelectorAll('[data-lang]');
+    const newsletterPlaceholder = document.querySelectorAll('#newsletter-placeholder span');
+    function setLanguage(lang) {
+      translatableElements.forEach(el => {
+        el.classList.toggle('hidden', el.getAttribute('data-lang') !== lang);
+      });
+      const placeholderText = Array.from(newsletterPlaceholder).find(span => span.getAttribute('data-lang') === lang).textContent;
+      document.getElementById('newsletter-input').placeholder = placeholderText;
+      languageToggles.forEach(toggle => {
+        toggle.classList.toggle('active', toggle.getAttribute('data-lang') === lang);
+      });
+    }
+    setLanguage('en');
+    languageToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const lang = toggle.getAttribute('data-lang');
+        setLanguage(lang);
+      });
+    });
+
+    // Chat Modal
+    const modal = document.getElementById('chatModal');
+    const expertName = document.getElementById('chatExpertName');
+    let currentExpert = '';
+    let currentExpertEmail = '';
+
+    function openChatModal(name, email) {
+      currentExpert = name;
+      currentExpertEmail = email;
+      expertName.innerHTML = `
+        <span data-lang="en">Chat with ${name}</span>
+        <span data-lang="kn" class="hidden">${name} ಜೊತೆಗೆ ಚಾಟ್ ಮಾಡಿ</span>
+        <span data-lang="ur" class="hidden">${name} کے ساتھ چیٹ کریں</span>
+        <span data-lang="hi" class="hidden">${name} के साथ चैट करें</span>`;
+      document.getElementById('messages').innerHTML = '';
+      modal.style.display = 'flex';
+      gsap.from(".modal-content", { opacity: 0, scale: 0.7, duration: 0.8, ease: "back.out" });
+      document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeChatModal() {
+      gsap.to(".modal-content", { opacity: 0, scale: 0.7, duration: 0.3, ease: "power2.in", onComplete: () => {
+        modal.style.display = 'none';
+      }});
+    }
+
+    // Gemini API Integration
+    const API_KEY = "AIzaSyDN8pTetLQrS3hP7dm-0_nQCnJiKipF-hw";
+
+    async function sendMessage() {
+      const msgInput = document.getElementById('msg');
+      const message = msgInput.value.trim();
+      if (!message) return;
+
+      const messagesContainer = document.getElementById('messages');
+      const username = 'Guest';
+      messagesContainer.innerHTML += `<div class="chat-message user-message"><i class="fas fa-user mr-2"></i><strong>${username}:</strong> ${message}</div>`;
+      msgInput.value = '';
+
+      document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+
+      // Send user message to server for SMTP
+      try {
+        const response = await fetch('/send_message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: message,
+            expert_name: currentExpert,
+            expert_email: currentExpertEmail
+          })
+        });
+        const result = await response.json();
+        if (result.status !== 'success') {
+          throw new Error(result.message || 'Failed to send email');
+        }
+        showToast('Message sent to expert successfully!', 'success');
+      } catch (error) {
+        console.error('Error sending message via SMTP:', error);
+        showToast(`Error sending message: ${error.message}`, 'error');
+      }
+
+      // Fetch response from Gemini API
+      try {
+        const prompt = `You are a cybersecurity specialist. Respond to this query about network security: ${message}`;
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + API_KEY, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        });
+
+        const data = await response.json();
+        const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Unable to fetch response right now, try again later.';
+        messagesContainer.innerHTML += `<div class="chat-message bot-message"><i class="fas fa-robot mr-2"></i><strong>ThreatAI Bot:</strong> ${botReply}</div>`;
+        document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        console.error('Error fetching Gemini response:', error);
+        messagesContainer.innerHTML += `<div class="chat-message bot-message"><i class="fas fa-robot mr-2"></i><strong>ThreatAI Bot:</strong> Error fetching response. Please try again later.</div>`;
+        document.querySelector('.input-form').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    document.getElementById('msg').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    document.getElementById('sendChat').addEventListener('click', sendMessage);
+    document.querySelector('.close-button').addEventListener('click', closeChatModal);
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) closeChatModal();
+    });
+
+    // Appointment Scheduler
+    let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+    flatpickr("#appointmentDate", {
+      enableTime: false,
+      dateFormat: "Y-m-d",
+      minDate: "today"
+    });
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      gsap.fromTo(toast, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
+      setTimeout(() => {
+        gsap.to(toast, { opacity: 0, y: 50, duration: 0.5, ease: "power2.in", onComplete: () => {
+          toast.style.display = 'none';
+        } });
+      }, 5000);
+    }
+
+    function updateAppointments() {
+      const appointmentList = document.getElementById('appointmentList');
+      appointmentList.innerHTML = appointments.map((a, index) => `
+        <li class="flex justify-between items-center mb-2">
+          <span>${a.expert} on ${a.date}</span>
+          <button class="delete-button" onclick="deleteAppointment(${index})">Delete</button>
+        </li>
+      `).join('');
+    }
+
+    function deleteAppointment(index) {
+      const { expert, date } = appointments[index];
+      appointments.splice(index, 1);
+      localStorage.setItem('appointments', JSON.stringify(appointments));
+      showToast(`Consultation with ${expert} on ${date} deleted.`, 'success');
+      updateAppointments();
+    }
+
+    document.getElementById('appointmentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const expert = document.getElementById('expertSelect').value;
+      const date = document.getElementById('appointmentDate').value;
+      if (!date) {
+        showToast('Please select a date.', 'error');
+        return;
+      }
+
+      appointments.push({ expert, date });
+      localStorage.setItem('appointments', JSON.stringify(appointments));
+      showToast(`Consultation scheduled with ${expert} on ${date}!`, 'success');
+      updateAppointments();
+      document.getElementById('appointmentForm').reset();
+    });
+
+    // Initialize Appointments
+    window.addEventListener('load', () => {
+      updateAppointments();
+    });
+
+    // Fallback image if video fails
+    const video = document.querySelector('#bg-video');
+    video.onerror = () => {
+      document.querySelector('#bg-video img').style.display = 'block';
+      video.style.display = 'none';
+    };
+  </script>
+</body>
+</html>
