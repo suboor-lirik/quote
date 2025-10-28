@@ -16,9 +16,9 @@
     </script>
     <style>
         :root {
-            --primary: #4a90e2; /* Skyblue */
-            --secondary: #50c9c3; /* Teal */
-            --accent: #28a745; /* Green */
+            --primary: #4a90e2;
+            --secondary: #50c9c3;
+            --accent: #28a745;
             --bg-light: #f0f4f8;
             --bg-dark: #1a1a2e;
             --text-dark: #333;
@@ -39,15 +39,12 @@
             --border-color: #444;
             --table-bg: #2a2a2a;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            margin: 0;
-            padding: 0;
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, var(--bg-main), #d9e2ec);
             color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
             transition: background 0.3s ease, color 0.3s ease;
         }
         .navbar {
@@ -63,15 +60,6 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            transition: all 0.3s ease;
-        }
-        .navbar:hover {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .nav-links {
-            display: flex;
-            gap: 20px;
         }
         .nav-links a {
             color: var(--text-main);
@@ -81,24 +69,6 @@
             padding: 8px 15px;
             border-radius: 8px;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(74, 144, 226, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.5s ease, height 0.5s ease;
-        }
-        .nav-links a:hover::before {
-            width: 200px;
-            height: 200px;
         }
         .nav-links a:hover {
             color: var(--primary);
@@ -110,11 +80,10 @@
             color: var(--text-main);
             font-size: 1.2rem;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
-        .theme-toggle:hover {
-            transform: rotate(180deg);
-        }
+        .theme-toggle:hover { transform: rotate(180deg); }
+
+        /* HERO SECTION - SAME DESIGN */
         .hero-section {
             height: 40vh;
             position: relative;
@@ -146,12 +115,7 @@
             color: var(--text-light);
             margin-bottom: 15px;
             animation: glow 1.5s ease-in-out infinite alternate;
-            transform: perspective(500px) translateZ(0);
-            transition: transform 0.3s ease;
             text-shadow: 0 0 10px var(--accent), 0 0 15px var(--secondary);
-        }
-        .hero-content h1:hover {
-            transform: perspective(500px) translateZ(20px);
         }
         .hero-content p {
             font-size: 1.3rem;
@@ -159,60 +123,37 @@
             color: var(--text-light);
             text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
         }
+
+        /* CHAT SECTION - FULL HEIGHT, SCROLL WITH PAGE */
         .chat-main-section {
             padding: 20px;
-            width: 100%;
-            min-height: calc(100vh - 60px);
-            position: relative;
-            z-index: 10;
+            min-height: calc(100vh - 40vh - 60px);
             display: flex;
             flex-direction: column;
         }
         .chat-container {
+            flex: 1;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 16px rgba(31, 38, 135, 0.3);
             border-radius: 15px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            height: calc(100vh - 120px);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            max-width: 1000px;
+            margin: 0 auto;
             width: 100%;
-            box-sizing: border-box;
-        }
-        .chat-container:hover {
-            transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-        .chat-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            transition: all 0.4s ease;
-        }
-        .chat-container:hover::before {
-            top: -100%;
-            left: -100%;
         }
         .chat-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
             font-size: 1.8rem;
             font-weight: 800;
             background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 20px;
+            padding: 15px 0;
             animation: glow 1.5s ease-in-out infinite alternate;
         }
         .bot-avatar {
@@ -221,308 +162,166 @@
             color: var(--accent);
             animation: pulse 1.5s infinite;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+        @keyframes glow { from { text-shadow: 0 0 10px var(--accent); } to { text-shadow: 0 0 20px var(--secondary); } }
+
         .quick-replies {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            padding: 10px;
             justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         .quick-reply-btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: rgba(255, 255, 255, 0.2);
             color: var(--text-main);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
         .quick-reply-btn:hover {
             background: var(--primary);
-            color: var(--text-light);
+            color: white;
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
+
         .chat-box {
-            flex-grow: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            flex: 1;
             padding: 15px;
             overflow-y: auto;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) transparent;
+            gap: 12px;
         }
-        .chat-box::-webkit-scrollbar {
-            width: 8px;
+        .chat-box::-webkit-scrollbar { width: 6px; }
+        .chat-box::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+        .chat-message { display: flex; align-items: flex-start; max-width: 85%; animation: slide-in 0.3s ease-out; }
+        .chat-message .avatar { font-size: 1.4rem; margin: 0 8px; color: var(--accent); }
+        .chat-message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-message.user .avatar { margin-left: 0; }
+        .chat-message .content {
+            padding: 10px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            background: var(--message-bot-bg);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .chat-box::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .chat-box::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
+        .chat-message.user .content { background: var(--message-user-bg); border-bottom-right-radius: 4px; }
+        .chat-message.bot .content { border-bottom-left-radius: 4px; }
+
         .quote-container {
             background: var(--table-bg);
             border-radius: 12px;
-            padding: 20px;
-            margin: 10px 0;
+            padding: 16px;
+            margin: 8px 0;
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .quote-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-dark);
-            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
         .pdf-download-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--text-light);
+            color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 25px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
+            margin-top: 12px;
+            font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            gap: 6px;
         }
-        .pdf-download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-        }
-        .chat-message {
-            display: flex;
-            align-items: flex-start;
-            max-width: 90%;
-            animation: slide-in 0.4s ease-out;
-            position: relative;
-        }
-        .chat-message .avatar {
-            font-size: 1.5rem;
-            margin-right: 10px;
-            color: var(--accent);
-            flex-shrink: 0;
-        }
-        .chat-message.user .avatar {
-            margin-left: 10px;
-            margin-right: 0;
-            order: 2;
-        }
-        .chat-message .content {
-            padding: 12px 18px;
-            border-radius: 18px;
-            font-size: 1rem;
-            line-height: 1.5;
-            word-wrap: break-word;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            background: var(--message-bot-bg);
-            color: var(--text-light);
-        }
-        .chat-message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-        .chat-message.user .content {
-            background: var(--message-user-bg);
-            color: var(--text-light);
-            border-bottom-right-radius: 4px;
-            text-align: right;
-        }
-        .chat-message.bot {
-            align-self: flex-start;
-        }
-        .chat-message.bot .content {
-            border-bottom-left-radius: 4px;
-        }
-        .chat-message .feedback {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-            justify-content: flex-end;
-        }
-        .chat-message.bot .feedback {
-            justify-content: flex-start;
-        }
-        .feedback-btn {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: color 0.3s ease;
-        }
-        .feedback-btn:hover {
-            color: var(--accent);
-        }
+        .pdf-download-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4); }
+
         .chat-input-container {
             display: flex;
-            gap: 10px;
-            position: relative;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
         .attach-btn, .emoji-btn, .voice-btn {
-            padding: 15px;
+            padding: 12px;
             background: var(--secondary);
-            color: var(--text-light);
+            color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
-        .attach-btn:hover, .emoji-btn:hover, .voice-btn:hover {
-            background: var(--accent);
-            transform: scale(1.1);
-        }
+        .attach-btn:hover, .emoji-btn:hover, .voice-btn:hover { background: var(--accent); transform: scale(1.1); }
         .emoji-picker {
             position: absolute;
-            bottom: 60px;
-            left: 0;
+            bottom: 70px;
+            left: 60px;
             background: var(--bg-light);
             padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: none;
             z-index: 20;
-            border: 1px solid var(--border-color);
         }
-        .emoji-picker button {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background 0.2s;
-        }
-        .emoji-picker button:hover {
-            background: var(--primary);
-            color: var(--text-light);
-        }
+        .emoji-picker button { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 4px; }
         .chat-input {
-            flex-grow: 1;
-            padding: 15px;
+            flex: 1;
+            padding: 12px 16px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-main);
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
-            transition: all 0.3s ease;
         }
-        .chat-input:focus {
-            border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 10px rgba(28, 167, 69, 0.3);
-        }
+        .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(28, 167, 69, 0.3); }
         .chat-send-btn {
-            padding: 15px 30px;
+            padding: 12px 24px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--text-light);
+            color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
-        .chat-send-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.5s ease, height 0.5s ease;
-        }
-        .chat-send-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-        .chat-send-btn:hover {
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .chat-send-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .chat-send-btn:hover { background: linear-gradient(135deg, var(--secondary), var(--accent)); transform: scale(1.05); }
+
         .typing-indicator {
+            align-self: flex-start;
+            background: var(--message-bot-bg);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 10px 15px;
-            background: var(--message-bot-bg);
-            color: var(--text-light);
-            border-radius: 18px;
-            max-width: 80%;
-            align-self: flex-start;
+            gap: 4px;
             border-bottom-left-radius: 4px;
         }
         .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background: var(--text-light);
-            border-radius: 50%;
-            display: inline-block;
-            animation: typing 1s infinite;
+            height: 6px; width: 6px; background: white; border-radius: 50%; display: inline-block; animation: typing 1s infinite;
         }
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        @keyframes typing {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        @keyframes glow {
-            from { text-shadow: 0 0 10px var(--accent), 0 0 15px var(--accent); }
-            to { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--secondary); }
-        }
-        @keyframes slide-in {
-            from { opacity: 0; transform: translateX(-15px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+        @keyframes slide-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         @media (max-width: 768px) {
             .hero-section { height: 30vh; }
             .hero-content h1 { font-size: 2.2rem; }
             .hero-content p { font-size: 1.1rem; }
-            .chat-container { padding: 15px; height: calc(100vh - 100px); }
-            .chat-header { font-size: 1.6rem; }
-            .quick-replies { flex-direction: column; align-items: center; }
-            .chat-input-container { flex-wrap: wrap; justify-content: center; }
-            .chat-send-btn { width: auto; }
-            .nav-links { gap: 10px; }
-            .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
+            .chat-container { margin: 10px; border-radius: 12px; }
+            .chat-header { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body data-theme="light">
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-links">
             <a href="/">Home</a>
@@ -531,6 +330,8 @@
         </div>
         <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
     </nav>
+
+    <!-- HERO SECTION - SAME DESIGN -->
     <section class="hero-section">
         <div id="particles-js"></div>
         <div class="hero-content" data-aos="zoom-in" data-aos-duration="1200">
@@ -538,394 +339,218 @@
             <p>Your intelligent companion for instant quote generation & max discount calculations!</p>
         </div>
     </section>
-    <section class="chat-main-section" id="chat-section" data-aos="fade-up" data-aos-delay="400">
+
+    <!-- CHAT SECTION - NO FEATURE CARD, SCROLL WITH PAGE -->
+    <section class="chat-main-section" data-aos="fade-up" data-aos-delay="400">
         <div class="chat-container">
             <h2 class="chat-header"><i class="fas fa-robot bot-avatar"></i>Quote Assistant AI</h2>
             <div class="quick-replies" id="quickReplies"></div>
             <div class="chat-box" id="chatBox"></div>
             <div class="chat-input-container">
-                <button class="attach-btn" title="Attach File"><i class="fas fa-paperclip"></i></button>
-                <button class="emoji-btn" id="emojiBtn" title="Add Emoji"><i class="fas fa-smile"></i></button>
+                <button class="attach-btn" title="Attach"><i class="fas fa-paperclip"></i></button>
+                <button class="emoji-btn" id="emojiBtn" title="Emoji"><i class="fas fa-smile"></i></button>
                 <div class="emoji-picker" id="emojiPicker">
-                    <button onclick="insertEmoji('😊')">😊</button>
-                    <button onclick="insertEmoji('👍')">👍</button>
-                    <button onclick="insertEmoji('💼')">💼</button>
-                    <button onclick="insertEmoji('💰')">💰</button>
-                    <button onclick="insertEmoji('📈')">📈</button>
+                    <button onclick="insertEmoji('Positive')">Positive</button>
+                    <button onclick="insertEmoji('Great')">Great</button>
+                    <button onclick="insertEmoji('Money')">Money</button>
+                    <button onclick="insertEmoji('Chart')">Chart</button>
+                    <button onclick="insertEmoji('Briefcase')">Briefcase</button>
                 </div>
-                <button class="voice-btn" id="voiceBtn" title="Voice Input"><i class="fas fa-microphone"></i></button>
-                <input type="text" class="chat-input" id="chatInput" placeholder="Ask about quotes, discounts, or business tips..." autocomplete="off">
+                <button class="voice-btn" id="voiceBtn" title="Voice"><i class="fas fa-microphone"></i></button>
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask about quotes, discounts..." autocomplete="off">
                 <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
             </div>
         </div>
     </section>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize Particles.js
-        if (document.getElementById('particles-js')) {
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 100, density: { enable: true, value_area: 800 } },
-                    color: { value: '#ffffff' },
-                    shape: { type: 'circle' },
-                    opacity: { value: 0.6, random: true },
-                    size: { value: 4, random: true },
-                    line_linked: { enable: true, distance: 120, color: '#ffffff', opacity: 0.4, width: 1 },
-                    move: { enable: true, speed: 8, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-                },
-                interactivity: {
-                    detect_on: 'canvas',
-                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-                    modes: { repulse: { distance: 120, duration: 0.4 }, push: { particles_nb: 4 } }
-                },
-                retina_detect: true
-            });
-        }
-        // Initialize AOS
+        // Particles
+        particlesJS('particles-js', {
+            particles: { number: { value: 100, density: { enable: true, value_area: 800 } }, color: { value: '#ffffff' }, shape: { type: 'circle' }, opacity: { value: 0.6, random: true }, size: { value: 4, random: true }, line_linked: { enable: true, distance: 120, color: '#ffffff', opacity: 0.4, width: 1 }, move: { enable: true, speed: 8, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false } },
+            interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true }, modes: { repulse: { distance: 120, duration: 0.4 }, push: { particles_nb: 4 } } },
+            retina_detect: true
+        });
+
         AOS.init({ duration: 1200, once: true, easing: 'ease-in-out-sine' });
+
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
         });
+
         let conversationId = null;
         let history = [];
         const chatBox = document.getElementById('chatBox');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
         const quickReplies = document.getElementById('quickReplies');
-        const voiceBtn = document.getElementById('voiceBtn');
         const emojiBtn = document.getElementById('emojiBtn');
         const emojiPicker = document.getElementById('emojiPicker');
-        const attachBtn = document.querySelector('.attach-btn');
-        // Simulate attachment
-        attachBtn.addEventListener('click', () => {
-            alert('Attachment feature: Upload files for quote analysis (Simulated)');
-        });
-        // Emoji picker toggle
+
         emojiBtn.addEventListener('click', () => {
             emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
         });
+
         function insertEmoji(emoji) {
             chatInput.value += emoji;
             chatInput.focus();
             emojiPicker.style.display = 'none';
         }
-        // Simulate speech recognition
-        let isRecording = false;
-        voiceBtn.addEventListener('click', () => {
-            isRecording = !isRecording;
-            voiceBtn.style.background = isRecording ? '#28a745' : 'var(--secondary)';
-            alert(isRecording ? 'Voice recording started! (Simulated)' : 'Voice recording stopped! (Simulated)');
-        });
-        // Fetch and render dynamic quick replies
+
+        // FIXED: Proper error handling + fallback
         async function fetchQuickReplies() {
             try {
-                const response = await fetch('/get_quick_replies', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                const response = await fetch('/get_quick_replies', { method: 'GET' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                if (data.error) {
-                    console.error('Error fetching quick replies:', data.error);
-                    return;
-                }
-                renderQuickReplies(data.accounts, data.products);
+                if (data.error) throw new Error(data.error);
+                renderQuickReplies(data.accounts || [], data.products || []);
             } catch (error) {
-                console.error('Failed to fetch quick replies:', error);
-                quickReplies.innerHTML = '<p>Error loading quick replies. Please try again.</p>';
+                console.error('Quick replies failed:', error);
+                quickReplies.innerHTML = '<p style="color: #ff6b6b; font-size: 0.9rem;">Quick replies unavailable. Type manually.</p>';
             }
         }
+
         function renderQuickReplies(accounts, products) {
-            quickReplies.innerHTML = ''; // Clear existing buttons
-            const defaultQuantity = 12; // Default quantity for demo
-            accounts.forEach(account => {
-                products.forEach(product => {
-                    // Quote button
-                    const quoteBtn = document.createElement('button');
-                    quoteBtn.className = 'quick-reply-btn';
-                    quoteBtn.textContent = `Quote for ${account.AccountName}`;
-                    quoteBtn.onclick = () => quickReply(`generate quote for ${account.AccountName} for Quantity ${defaultQuantity} for product ${product.ProductName}`);
-                    quickReplies.appendChild(quoteBtn);
-                    // Max discount button
-                    const maxDiscountBtn = document.createElement('button');
-                    maxDiscountBtn.className = 'quick-reply-btn';
-                    maxDiscountBtn.textContent = `Max Discount for ${account.AccountName}`;
-                    maxDiscountBtn.onclick = () => quickReply(`calculate max discount for ${account.AccountName} for quantity ${defaultQuantity} for product ${product.ProductName}`);
-                    quickReplies.appendChild(maxDiscountBtn);
+            quickReplies.innerHTML = '';
+            const qty = 12;
+            if (accounts.length === 0 || products.length === 0) {
+                quickReplies.innerHTML = '<p style="color: #aaa; font-size: 0.9rem;">No accounts/products loaded.</p>';
+                return;
+            }
+            accounts.forEach(acc => {
+                products.forEach(prod => {
+                    const qBtn = document.createElement('button');
+                    qBtn.className = 'quick-reply-btn';
+                    qBtn.textContent = `Quote: ${acc.AccountName}`;
+                    qBtn.onclick = () => quickReply(`generate quote for ${acc.AccountName} for Quantity ${qty} for product ${prod.ProductName}`);
+                    quickReplies.appendChild(qBtn);
+
+                    const dBtn = document.createElement('button');
+                    dBtn.className = 'quick-reply-btn';
+                    dBtn.textContent = `Max Disc: ${acc.AccountName}`;
+                    dBtn.onclick = () => quickReply(`calculate max discount for ${acc.AccountName} for quantity ${qty} for product ${prod.ProductName}`);
+                    quickReplies.appendChild(dBtn);
                 });
             });
         }
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(value);
+
+        function formatCurrency(v) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
         }
-        function createQuoteContent(quoteData) {
-            console.log('createQuoteContent input:', JSON.stringify(quoteData));
-            let content;
-            if (quoteData.isMaxDiscount) {
-                const accountName = quoteData.AccountName || 'N/A';
-                const productName = quoteData.ProductName || 'N/A';
-                const quantity = quoteData.Quantity || 'N/A';
-                const maxDiscount = quoteData['Max_Discount(%)'] || 'N/A';
-                const validTill = quoteData.Offer_Valid_Till || 'N/A';
-                content = `
-                    <p><strong>Based on the above inputs, the maximum discount has been calculated as:</strong></p>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li><strong>Account Name:</strong> ${accountName}</li>
-                        <li><strong>Product Name:</strong> ${productName}</li>
-                        <li><strong>Quantity:</strong> ${quantity} Units</li>
-                        <li><strong>Maximum Discount (%):</strong> ${maxDiscount}</li>
-                        <li><strong>Offer Valid Till:</strong> ${validTill}</li>
-                    </ul>
-                `;
-                return `<div class="quote-container"><div class="quote-text">${content}</div></div>`;
-            } else {
-                const accountName = quoteData.AccountName || 'N/A';
-                const customerType = quoteData.customer_type || 'N/A';
-                const pricebook = quoteData.selected_pricebook || 'Standard Pricebook';
-                const productName = quoteData.ProductName || 'N/A';
-                const quantity = quoteData.Quantity || 'N/A';
-                const unitPrice = quoteData.UnitPrice ? formatCurrency(quoteData.UnitPrice) : 'N/A';
-                const partnerDiscount = quoteData.PartnerDiscount || '0';
-                const regularTotal = quoteData.RegularTotal ? formatCurrency(quoteData.RegularTotal) : 'N/A';
-                const discountedTotal = quoteData.DiscountedTotal ? formatCurrency(quoteData.DiscountedTotal) : 'N/A';
-                content = `
-                    <p><strong>Based on the above inputs, the quote has been generated as:</strong></p>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li><strong>Account Name:</strong> ${accountName}</li>
-                        <li><strong>Customer Type:</strong> ${customerType}</li>
-                        <li><strong>Selected Pricebook:</strong> ${pricebook}</li>
-                        <li><strong>Product Name:</strong> ${productName}</li>
-                        <li><strong>Quantity:</strong> ${quantity} Units</li>
-                        <li><strong>Unit Price:</strong> ${unitPrice}</li>
-                        <li><strong>Partner Discount:</strong> ${partnerDiscount}%</li>
-                        <li><strong>Regular Total:</strong> ${regularTotal}</li>
-                        <li><strong>Discounted Total:</strong> ${discountedTotal}</li>
-                    </ul>
-                `;
+
+        function createQuoteContent(q) {
+            if (q.isMaxDiscount) {
                 return `
                     <div class="quote-container">
-                        <div class="quote-text">${content}</div>
-                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId || 'N/A'}', '${accountName}', '${customerType}', '${pricebook}', '${productName}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${partnerDiscount}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || new Date().toISOString().split('T')[0]}')">
-                            <i class="fas fa-download"></i> Download Quote PDF
-                        </button>
-                    </div>
-                `;
-            }
-        }
-        async function downloadQuotePDF(button, AccountId, AccountName, customer_type, selected_pricebook, ProductName, Quantity, UnitPrice, PartnerDiscount, RegularTotal, DiscountedTotal, generated_on) {
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
-            console.log('Starting PDF generation for:', AccountName);
-            try {
-                if (!window.jspdf || !window.jspdf.jsPDF) {
-                    console.error('jsPDF not loaded');
-                    throw new Error('jsPDF library not loaded. Please check your internet connection.');
-                }
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-                const silverLight = '#EDEEEB';
-                const darkNight = '#31393C';
-                const skyBlue = '#4a90e2';
-                doc.setFillColor(silverLight);
-                doc.rect(0, 0, 210, 297, 'F');
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(20);
-                doc.setTextColor(darkNight);
-                doc.text('Quote Document', 105, 20, { align: 'center' });
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "normal");
-                doc.text(`Generated on: ${generated_on}`, 105, 30, { align: 'center' });
-                doc.text(`Quote ID: Q${Date.now()}`, 105, 38, { align: 'center' });
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(14);
-                doc.text('Customer Information', 20, 55);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(12);
-                doc.text(`Account: ${AccountName}`, 20, 65);
-                doc.text(`Account ID: ${AccountId}`, 20, 73);
-                doc.text(`Customer Type: ${customer_type}`, 20, 81);
-                doc.text(`Pricebook: ${selected_pricebook}`, 20, 89);
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(14);
-                doc.text('Quote Details', 20, 105);
-                doc.setFontSize(10);
-                doc.setFillColor(skyBlue);
-                doc.rect(20, 115, 170, 8, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.text('Field', 22, 120);
-                doc.text('Value', 100, 120);
-                doc.setTextColor(darkNight);
-                let yPos = 128;
-                const fields = [
-                    { label: 'Account ID', value: AccountId },
-                    { label: 'Account Name', value: AccountName },
-                    { label: 'Customer Type', value: customer_type },
-                    { label: 'Pricebook', value: selected_pricebook },
-                    { label: 'Product', value: ProductName },
-                    { label: 'Quantity', value: String(Quantity) },
-                    { label: 'Unit Price', value: formatCurrency(UnitPrice) },
-                    { label: 'Partner Discount', value: `${PartnerDiscount}%` },
-                    { label: 'Regular Total', value: formatCurrency(RegularTotal) },
-                    { label: 'Discounted Total', value: formatCurrency(DiscountedTotal) }
-                ];
-                fields.forEach((field, index) => {
-                    if (index % 2 === 0) {
-                        doc.setFillColor(240, 244, 248);
-                        doc.rect(20, yPos - 4, 170, 8, 'F');
-                    }
-                    doc.setFont("helvetica", "normal");
-                    doc.setTextColor(darkNight);
-                    doc.text(field.label, 22, yPos);
-                    doc.text(field.value, 100, yPos);
-                    yPos += 8;
-                });
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(14);
-                doc.text('Summary', 20, yPos + 10);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(10);
-                const summaryText = `Based on the provided inputs, the quote for Account Name: ${AccountName}, which is a ${customer_type}, has been created under the Selected Pricebook: ${selected_pricebook}. The Product Name: ${ProductName} has been quoted for Quantity: ${Quantity} Units at a Unit Price: ${formatCurrency(UnitPrice)}, with a Partner Discount: ${PartnerDiscount}% applied. After applying the discount, the Regular Total: ${formatCurrency(RegularTotal)} has been reduced to a Discounted Total: ${formatCurrency(DiscountedTotal)}.`;
-                const splitText = doc.splitTextToSize(summaryText, 170);
-                doc.text(splitText, 20, yPos + 18);
-                yPos += splitText.length * 6 + 15;
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(14);
-                doc.text('Terms & Conditions', 20, yPos);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(10);
-                doc.text('• Payment Terms: Net 30 days', 20, yPos + 8);
-                doc.text('• Valid until: 30 days from generation date', 20, yPos + 14);
-                doc.text('• Prices subject to change without notice', 20, yPos + 20);
-                doc.setFontSize(8);
-                doc.setTextColor(darkNight);
-                doc.text('Thank you for your business!', 105, 280, { align: 'center' });
-                doc.text('Generated by Quote AI Assistant | © 2025 All rights reserved', 105, 285, { align: 'center' });
-                doc.save(`Quote_${AccountId}_${Date.now()}.pdf`);
-                console.log('PDF generated successfully for', AccountName);
-                button.innerHTML = '<i class="fas fa-check"></i> PDF Downloaded!';
-                setTimeout(() => {
-                    button.innerHTML = '<i class="fas fa-download"></i> Download Quote PDF';
-                    button.disabled = false;
-                }, 2000);
-            } catch (error) {
-                console.error('PDF generation error:', error);
-                alert(`Failed to generate PDF: ${error.message}. Please try again.`);
-                button.innerHTML = '<i class="fas fa-download"></i> Download Quote PDF';
-                button.disabled = false;
-            }
-        }
-        function addUserMessage(text) {
-            const msg = document.createElement('div');
-            msg.className = 'chat-message user';
-            msg.innerHTML = `
-                <i class="fas fa-user avatar"></i>
-                <div class="content">${text}</div>
-                <div class="feedback"></div>
-            `;
-            chatBox.appendChild(msg);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-        function addBotMessage(text, requestId, quoteData = null) {
-            const msg = document.createElement('div');
-            msg.className = 'chat-message bot';
-            let contentHtml;
-            if (quoteData) {
-                console.log('Backend quote_data:', JSON.stringify(quoteData));
-                contentHtml = createQuoteContent(quoteData);
+                        <p><strong>Maximum discount calculated:</strong></p>
+                        <ul style="list-style:none;padding-left:0;">
+                            <li><strong>Account:</strong> ${q.AccountName}</li>
+                            <li><strong>Product:</strong> ${q.ProductName}</li>
+                            <li><strong>Quantity:</strong> ${q.Quantity} Units</li>
+                            <li><strong>Max Discount:</strong> ${q['Max_Discount(%)']}</li>
+                            <li><strong>Valid Till:</strong> ${q.Offer_Valid_Till}</li>
+                        </ul>
+                    </div>`;
             } else {
-                console.log('Backend response (no quote_data):', text);
-                contentHtml = formatMessage(text);
+                return `
+                    <div class="quote-container">
+                        <p><strong>Quote generated:</strong></p>
+                        <ul style="list-style:none;padding-left:0;">
+                            <li><strong>Account:</strong> ${q.AccountName}</li>
+                            <li><strong>Product:</strong> ${q.ProductName}</li>
+                            <li><strong>Qty:</strong> ${q.Quantity} Units</li>
+                            <li><strong>Unit Price:</strong> ${formatCurrency(q.UnitPrice)}</li>
+                            <li><strong>Discount:</strong> ${q.PartnerDiscount}%</li>
+                            <li><strong>Total:</strong> ${formatCurrency(q.DiscountedTotal)}</li>
+                        </ul>
+                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${q.AccountId}', '${q.AccountName}', '${q.customer_type}', '${q.selected_pricebook}', '${q.ProductName}', ${q.Quantity}, ${q.UnitPrice}, ${q.PartnerDiscount}, ${q.RegularTotal}, ${q.DiscountedTotal}, '${q.generated_on}')">
+                            <i class="fas fa-download"></i> PDF
+                        </button>
+                    </div>`;
             }
-           
-            msg.innerHTML = `
-                <i class="fas fa-robot avatar"></i>
-                <div class="content">${contentHtml}</div>
-                <div class="feedback">
-                    <button class="feedback-btn" onclick="sendFeedback('${requestId || ''}', 1)" title="Good Response"><i class="fas fa-thumbs-up"></i></button>
-                    <button class="feedback-btn" onclick="sendFeedback('${requestId || ''}', 0)" title="Bad Response"><i class="fas fa-thumbs-down"></i></button>
-                </div>
-            `;
-            chatBox.appendChild(msg);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            showQuickReplies(false);
         }
-        function showTyping() {
-            const typing = document.createElement('div');
-            typing.className = 'typing-indicator';
-            typing.id = 'typing';
-            typing.innerHTML = '<span></span><span></span><span></span> Generating quote...';
-            chatBox.appendChild(typing);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-        function hideTyping() {
-            const typing = document.getElementById('typing');
-            if (typing) typing.remove();
-        }
-        function formatMessage(text) {
-            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                       .replace(/`(.*?)`/g, '<code>$1</code>')
-                       .replace(/\n/g, '<br>');
-        }
-        function showQuickReplies(show) {
-            quickReplies.style.display = show ? 'flex' : 'none';
-        }
-        function quickReply(text) {
-            chatInput.value = text;
-            sendMessage();
-        }
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
-            addUserMessage(message);
-            history.push({ role: 'user', content: message });
-            chatInput.value = '';
-            sendBtn.disabled = true;
-            showTyping();
+
+        async function downloadQuotePDF(btn, ...args) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             try {
-                const response = await fetch('/chat', {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text("Quote Generated", 105, 20, { align: 'center' });
+                doc.save(`Quote_${args[1]}.pdf`);
+                btn.innerHTML = '<i class="fas fa-check"></i> Done!';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-download"></i> PDF'; btn.disabled = false; }, 1500);
+            } catch (e) {
+                alert("PDF failed");
+                btn.innerHTML = '<i class="fas fa-download"></i> PDF';
+                btn.disabled = false;
+            }
+        }
+
+        function addUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'chat-message user';
+            div.innerHTML = `<i class="fas fa-user avatar"></i><div class="content">${text}</div>`;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addBotMessage(text, reqId, quoteData) {
+            const div = document.createElement('div');
+            div.className = 'chat-message bot';
+            const content = quoteData ? createQuoteContent(quoteData) : text.replace(/\n/g, '<br>');
+            div.innerHTML = `
+                <i class="fas fa-robot avatar"></i>
+                <div class="content">${content}</div>
+                <div style="display:flex;gap:5px;margin-top:5px;">
+                    <button class="feedback-btn" onclick="sendFeedback('${reqId}',1)" title="Good"><i class="fas fa-thumbs-up"></i></button>
+                    <button class="feedback-btn" onclick="sendFeedback('${reqId}',0)" title="Bad"><i class="fas fa-thumbs-down"></i></button>
+                </div>`;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTyping() {
+            const t = document.createElement('div');
+            t.className = 'typing-indicator';
+            t.id = 'typing';
+            t.innerHTML = '<span></span><span></span><span></span> Thinking...';
+            chatBox.appendChild(t);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+
+        function quickReply(text) { chatInput.value = text; sendMessage(); }
+
+        async function sendMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            addUserMessage(msg);
+            history.push({ role: 'user', content: msg });
+            chatInput.value = ''; sendBtn.disabled = true; showTyping();
+
+            try {
+                const res = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: message,
-                        history: history.slice(0, -1),
-                        conversation_id: conversationId
-                    })
+                    body: JSON.stringify({ prompt: msg, history: history.slice(0,-1), conversation_id: conversationId })
                 });
-                const data = await response.json();
-                if (data.error) {
-                    alert(`Error: ${data.error}`);
-                    hideTyping();
-                    sendBtn.disabled = false;
-                    return;
-                }
-                console.log('Backend response:', JSON.stringify(data));
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+
                 conversationId = data.conversation_id;
 
-                // FIX: Detect max discount and fix totals
                 if (data.quote_data) {
-                    // Fix regular/discount totals
                     if (data.quote_data.Quantity && data.quote_data.UnitPrice && !data.quote_data.isMaxDiscount) {
-                        const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
-                        const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
-                        const discountedTotal = regularTotal * discountFactor;
-                        data.quote_data.RegularTotal = regularTotal;
-                        data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
+                        const reg = data.quote_data.Quantity * data.quote_data.UnitPrice;
+                        const disc = reg * (1 - data.quote_data.PartnerDiscount / 100);
+                        data.quote_data.RegularTotal = reg;
+                        data.quote_data.DiscountedTotal = +disc.toFixed(2);
                     }
-
-                    // Detect max discount
                     if (data.quote_data['Max_Discount(%)'] !== undefined) {
                         data.quote_data.isMaxDiscount = true;
                     }
@@ -933,53 +558,28 @@
 
                 addBotMessage(data.response, data.request_id, data.quote_data);
                 history.push({ role: 'assistant', content: data.response });
-                hideTyping();
-                sendBtn.disabled = false;
-                chatInput.focus();
-            } catch (error) {
-                alert(`Error: Failed to get response from server. Details: ${error.message}`);
-                console.error(error);
-                hideTyping();
-                sendBtn.disabled = false;
+            } catch (e) {
+                addBotMessage(`Error: ${e.message}`);
+            } finally {
+                hideTyping(); sendBtn.disabled = false; chatInput.focus();
             }
         }
-        async function sendFeedback(requestId, rating) {
-            if (!requestId) return alert('No request ID for feedback');
-            try {
-                const response = await fetch('/feedback', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ request_id: requestId, rating: rating })
-                });
-                const data = await response.json();
-                alert(data.status === 'success' ? `Feedback sent: ${rating === 1 ? 'Thumbs Up!' : 'Thumbs Down!'}` : 'Error submitting feedback');
-            } catch (error) {
-                alert('Error: Failed to submit feedback.');
-                console.error(error);
-            }
+
+        async function sendFeedback(id, rating) {
+            if (!id) return;
+            await fetch('/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ request_id: id, rating }) });
         }
-        // Initialize chat
-        async function initializeChat() {
-            conversationId = 'convo-' + Date.now();
-            const welcomeMsg = "Welcome to Quote Assistant AI! I'm here to help with instant quote generation, maximum discount calculations, and tailored business advice. Start by asking for a quote or discount – or use the quick buttons below! 😊 💼 📈";
-            addBotMessage(welcomeMsg, null);
-            history.push({ role: 'assistant', content: welcomeMsg });
-            await fetchQuickReplies();
-            showQuickReplies(true);
-        }
-        // Initialize on load
+
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
-            initializeChat();
-            if (!window.jspdf || !window.jspdf.jsPDF) {
-                console.error('jsPDF failed to load from both CDNs');
-                alert('PDF generation library failed to load. Please check your internet connection and try again.');
-            }
+            conversationId = 'convo-' + Date.now();
+            addBotMessage("Hello! Ask me for quotes or max discounts.", null);
+            history.push({ role: 'assistant', content: "Hello!" });
+            fetchQuickReplies();  // FIXED: Now handles errors
         });
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+
+        chatInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
         });
     </script>
 </body>
