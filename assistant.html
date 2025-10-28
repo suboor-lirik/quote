@@ -913,33 +913,24 @@
                 }
                 console.log('Backend response:', JSON.stringify(data));
                 conversationId = data.conversation_id;
-                // Fix calculation errors in quote_data
-                if (data.quote_data && !data.quote_data.isMaxDiscount) {
-                    const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
-                    const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
-                    const discountedTotal = regularTotal * discountFactor;
-                    data.quote_data.RegularTotal = regularTotal;
-                    data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
+
+                // FIX: Detect max discount and fix totals
+                if (data.quote_data) {
+                    // Fix regular/discount totals
+                    if (data.quote_data.Quantity && data.quote_data.UnitPrice && !data.quote_data.isMaxDiscount) {
+                        const regularTotal = data.quote_data.Quantity * data.quote_data.UnitPrice;
+                        const discountFactor = 1 - (data.quote_data.PartnerDiscount / 100);
+                        const discountedTotal = regularTotal * discountFactor;
+                        data.quote_data.RegularTotal = regularTotal;
+                        data.quote_data.DiscountedTotal = Number(discountedTotal.toFixed(2));
+                    }
+
+                    // Detect max discount
+                    if (data.quote_data['Max_Discount(%)'] !== undefined) {
+                        data.quote_data.isMaxDiscount = true;
+                    }
                 }
-                if (data.quote_data && data.quote_data.isMaxDiscount) {
-                    const maxDiscountQuotes = JSON.parse(localStorage.getItem('maxDiscountQuotes') || '[]');
-                    const normalizedQuote = {
-                        AccountName: data.quote_data.AccountName || 'N/A',
-                        ProductName: data.quote_data.ProductName || 'N/A',
-                        Quantity: data.quote_data.Quantity || 0,
-                        PartnerDiscount: parseFloat(data.quote_data['Max_Discount(%)'] || '0'),
-                        generated_on: data.quote_data.generated_on || new Date().toISOString().split('T')[0],
-                        valid_until: data.quote_data.Offer_Valid_Till || 'N/A',
-                        AccountId: data.quote_data.AccountId || 'N/A',
-                        customer_type: data.quote_data.customer_type || 'N/A',
-                        selected_pricebook: data.quote_data.selected_pricebook || 'Standard Pricebook',
-                        UnitPrice: data.quote_data.UnitPrice || 0,
-                        RegularTotal: data.quote_data.RegularTotal || 0,
-                        DiscountedTotal: data.quote_data.DiscountedTotal || 0
-                    };
-                    maxDiscountQuotes.push(normalizedQuote);
-                    localStorage.setItem('maxDiscountQuotes', JSON.stringify(maxDiscountQuotes));
-                }
+
                 addBotMessage(data.response, data.request_id, data.quote_data);
                 history.push({ role: 'assistant', content: data.response });
                 hideTyping();
