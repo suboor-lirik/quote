@@ -635,7 +635,7 @@
                 renderQuickReplies(data.accounts, data.products);
             } catch (error) {
                 console.error('Failed to fetch quick replies:', error);
-                quickReplies.innerHTML = '<p>Error loading quick replies. Please try again.</p>';
+
             }
         }
         function renderQuickReplies(accounts, products) {
@@ -848,7 +848,7 @@
                 console.log('Backend response (no quote_data):', text);
                 contentHtml = formatMessage(text);
             }
-           
+
             msg.innerHTML = `
                 <i class="fas fa-robot avatar"></i>
                 <div class="content">${contentHtml}</div>
@@ -984,4 +984,3 @@
     </script>
 </body>
 </html>
-
