@@ -667,6 +667,7 @@
         function createQuoteContent(quoteData) {
             console.log('createQuoteContent input:', JSON.stringify(quoteData));
             let content;
+            const accountId = quoteData.AccountId || 'N/A';  // Ensure AccountId is always available
             if (quoteData.isMaxDiscount) {
                 const accountName = quoteData.AccountName || 'N/A';
                 const productName = quoteData.ProductName || 'N/A';
@@ -679,6 +680,7 @@
                     <p><strong>Based on the above inputs, the maximum discount has been calculated as:</strong></p>
                     <ul style="list-style: none; padding-left: 0;">
                         <li><strong>Account Name:</strong> ${accountName}</li>
+                        <li><strong>Account ID:</strong> ${accountId}</li>
                         <li><strong>Product Name:</strong> ${productName}</li>
                         <li><strong>Quantity:</strong> ${quantity} Units</li>
                         <li><strong>Maximum Discount (%):</strong> ${maxDiscount}</li>
@@ -690,7 +692,7 @@
                         <div class="quote-text">${content}</div>
                         <button class="pdf-download-btn" onclick="downloadQuotePDF(
                             this,
-                            '${quoteData.AccountId || 'N/A'}',
+                            '${accountId}',
                             '${accountName}',
                             '${productName}',
                             '${quantity}',
@@ -716,6 +718,7 @@
                     <p><strong>Based on the above inputs, the quote has been generated as:</strong></p>
                     <ul style="list-style: none; padding-left: 0;">
                         <li><strong>Account Name:</strong> ${accountName}</li>
+                        <li><strong>Account ID:</strong> ${accountId}</li>
                         <li><strong>Customer Type:</strong> ${customerType}</li>
                         <li><strong>Selected Pricebook:</strong> ${pricebook}</li>
                         <li><strong>Product Name:</strong> ${productName}</li>
@@ -729,7 +732,7 @@
                 return `
                     <div class="quote-container">
                         <div class="quote-text">${content}</div>
-                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${quoteData.AccountId || 'N/A'}', '${accountName}', '${customerType}', '${pricebook}', '${productName}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${partnerDiscount}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || new Date().toISOString().split('T')[0]}')">
+                        <button class="pdf-download-btn" onclick="downloadQuotePDF(this, '${accountId}', '${accountName}', '${customerType}', '${pricebook}', '${productName}', ${quoteData.Quantity || 0}, ${quoteData.UnitPrice || 0}, ${partnerDiscount}, ${quoteData.RegularTotal || 0}, ${quoteData.DiscountedTotal || 0}, '${quoteData.generated_on || new Date().toISOString().split('T')[0]}')">
                             <i class="fas fa-download"></i> Download Quote PDF
                         </button>
                     </div>
